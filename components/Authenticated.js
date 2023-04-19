@@ -5,7 +5,8 @@ import auth from '@react-native-firebase/auth';
 function connectWebSocket(props) {
   const backendUrl = new URL("http://localhost:8000")
   const ws_scheme = backendUrl.protocol == "https:" ? "wss" : "ws";
-  const path = ws_scheme + '://' + backendUrl.hostname + ':' + backendUrl.port + '/ws/user/' + props.userId + '/?token=' + props.authToken
+  console.log(props.alpha2CountryCode)
+  const path = ws_scheme + '://' + backendUrl.hostname + ':' + backendUrl.port + '/ws/user/' + props.userId + '/?token=' + props.authToken + '&country=' + props.alpha2CountryCode
   const ws = new WebSocket(path);
   ws.onopen = () => {
     // connection opened

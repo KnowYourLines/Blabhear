@@ -7,6 +7,7 @@ import { CountryPicker } from "react-native-country-codes-picker";
 export default function PhoneNumber(props) {
   const [show, setShow] = useState(true);
   const [countryDialCode, setCountryDialCode] = useState('');
+  const [alpha2CountryCode, setAlpha2CountryCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
   React.useEffect(() => {
@@ -51,6 +52,7 @@ export default function PhoneNumber(props) {
         show={show}
         pickerButtonOnPress={(item) => {
           setCountryDialCode(item.dial_code)
+          setAlpha2CountryCode(item.code)
           setShow(false);
         }}
         inputPlaceholder={'Search by country or dial code'}
@@ -75,7 +77,7 @@ export default function PhoneNumber(props) {
           onChangeText={setPhoneNumber}
         />
       </View>
-      <Button title="Sign In" onPress={() => { if (inputsValid()) props.onSubmit(countryDialCode + phoneNumber) }} />
+      <Button title="Sign In" onPress={() => { if (inputsValid()) props.onSubmit(countryDialCode + phoneNumber, alpha2CountryCode) }} />
 
     </View>
   );
