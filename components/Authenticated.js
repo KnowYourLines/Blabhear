@@ -50,15 +50,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  input: {
-    borderWidth: 2,
-    borderColor: 'lightblue',
-    width: 300,
-    marginVertical: 30,
-    fontSize: 25,
-    padding: 10,
-    borderRadius: 8,
-  },
   text: {
     fontSize: 25,
   },
