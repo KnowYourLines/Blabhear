@@ -45,7 +45,7 @@ export default function PhoneNumber(props) {
             color: 'black'
           },
           itemsList: {
-            height: '90%'
+            height: '80%'
           }
         }}
         show={show}
@@ -54,6 +54,7 @@ export default function PhoneNumber(props) {
           setShow(false);
         }}
         inputPlaceholder={'Search by country or dial code'}
+        onBackdropPress={() => setShow(false)}
       />
       <View style={styles.row}>
         <TouchableOpacity
