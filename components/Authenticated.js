@@ -51,6 +51,7 @@ export default function Authenticated(props) {
         ws.send(
           JSON.stringify({
             command: "update_display_name",
+            name: editableDisplayName
           })
         ); setEditName(false); setDisplayName(editableDisplayName)
       }} onEdit={() => { setEditName(true) }}></DisplayName>
