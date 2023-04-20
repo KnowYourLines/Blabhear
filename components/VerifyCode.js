@@ -10,7 +10,7 @@ export default function OTP(props) {
       <TextInput
         value={code}
         onChangeText={setCode}
-        keyboardType="numeric"
+        keyboardType="number-pad"
         style={styles.input}
       />
       <Button title="Confirm" onPress={() => props.onSubmit(code)} /></View>

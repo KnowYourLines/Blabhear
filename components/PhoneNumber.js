@@ -73,7 +73,7 @@ export default function PhoneNumber(props) {
         <TextInput
           style={styles.input}
           value={phoneNumber}
-          keyboardType="numeric"
+          keyboardType="phone-pad"
           onChangeText={setPhoneNumber}
         />
       </View>
