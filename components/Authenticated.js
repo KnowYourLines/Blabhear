@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity, Image, TextInput } from 'react-native';
+import { StyleSheet, View, Button } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import DisplayName from './DisplayName';
 
 export default function Authenticated(props) {
   const [displayName, setDisplayName] = useState("");
+  const [editableDisplayName, setEditableDisplayName] = useState("");
   const [editName, setEditName] = useState(false);
   const [ws, setWs] = useState(null);
 
@@ -22,6 +24,7 @@ export default function Authenticated(props) {
       const data = JSON.parse(message.data);
       if ("display_name" in data) {
         setDisplayName(data.display_name)
+        setEditableDisplayName(data.display_name)
       }
     };
 
@@ -42,43 +45,15 @@ export default function Authenticated(props) {
     connectWebSocket(props)
   }, [])
 
-  function DisplayName({ isEditing }) {
-    const [editableDisplayName, setEditableDisplayName] = useState(displayName);
-    if (!isEditing) {
-      return (<View style={styles.row}>
-        <Text style={styles.text}>{displayName}</Text>
-        <TouchableOpacity
-          style={styles.editButton}
-          onPress={() => { setEditName(true) }}
-        >
-          <Image
-            source={require('../assets/icons8-edit-24.png')}
-          /></TouchableOpacity>
-      </View>)
-    }
-    else {
-      return (
-        <View>
-          <View style={styles.row}>
-            <TextInput
-              value={editableDisplayName}
-              onChangeText={setEditableDisplayName}
-              keyboardType="default"
-              style={styles.edit}
-            /><View style={styles.editButtons}><Button title="Save" onPress={() => {
-              ws.send(
-                JSON.stringify({
-                  command: "update_display_name",
-                })
-              ); setEditName(false)
-            }} /><Button title="Cancel" onPress={() => setEditName(false)} /></View>
-          </View></View>
-      )
-    }
-  }
   return (
     <View style={styles.screen}>
-      <DisplayName isEditing={editName}></DisplayName>
+      <DisplayName isEditing={editName} displayName={displayName} editableDisplayName={editableDisplayName} onChangeText={setEditableDisplayName} onCancel={() => { setEditName(false); setEditableDisplayName(displayName) }} onSave={() => {
+        ws.send(
+          JSON.stringify({
+            command: "update_display_name",
+          })
+        ); setEditName(false); setDisplayName(editableDisplayName)
+      }} onEdit={() => { setEditName(true) }}></DisplayName>
       <View style={{ marginTop: 30 }}>
         <Button title="Sign Out" onPress={() => auth().signOut()} />
       </View>
@@ -96,24 +71,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10
-  },
-  editButton: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-  },
-  edit: {
-    borderWidth: 2,
-    borderColor: 'lightblue',
-    width: '60%',
-    fontSize: 20,
-    padding: 10,
-    borderRadius: 8,
-  },
-  editButtons: {
-    width: '30%',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10
