@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import {
+  StyleSheet, View, Button, PermissionsAndroid,
+  Platform, Linking, Alert
+} from 'react-native';
 import auth from '@react-native-firebase/auth';
 import DisplayName from './DisplayName';
+import NewContact from './NewContact';
+import Contacts from 'react-native-contacts';
 
 export default function Authenticated(props) {
   const [displayName, setDisplayName] = useState("");
   const [editableDisplayName, setEditableDisplayName] = useState("");
   const [editName, setEditName] = useState(false);
   const [ws, setWs] = useState(null);
+  const [canAccessContacts, setCanAccessContacts] = useState(false);
 
   function connectWebSocket(props) {
     const backendUrl = new URL("http://localhost:8000")
@@ -41,8 +47,41 @@ export default function Authenticated(props) {
     setWs(ws)
   }
 
+  function loadContacts() {
+    Contacts.getAll()
+      .then(contacts => {
+        console.log(contacts)
+      })
+  };
   React.useEffect(() => {
     connectWebSocket(props)
+    if (Platform.OS === 'android') {
+      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then((granted) => {
+        setCanAccessContacts(granted)
+        if (!granted) {
+          PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then(() => {
+              PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then((granted) => {
+                setCanAccessContacts(granted)
+                if (granted) { loadContacts() } else {
+                  Alert.alert('No permission to access contacts', '', [
+                    {
+                      text: 'Cancel',
+                      style: 'cancel',
+                    },
+                    {text: 'Go to Settings', onPress: () => Linking.openSettings()},
+                  ]);
+                }
+              }
+              );
+            })
+        } else {
+          loadContacts()
+        }
+      })
+    } else {
+      loadContacts();
+    }
   }, [])
 
   return (
@@ -55,6 +94,7 @@ export default function Authenticated(props) {
           })
         ); setEditName(false); setDisplayName(editableDisplayName)
       }} onEdit={() => { setEditName(true) }}></DisplayName>
+      <NewContact canAccess={canAccessContacts}></NewContact>
       <View style={{ marginTop: 30 }}>
         <Button title="Sign Out" onPress={() => auth().signOut()} />
       </View>
