@@ -21,8 +21,35 @@ export default function Authenticated(props) {
     const path = ws_scheme + '://' + backendUrl.hostname + ':' + backendUrl.port + '/ws/user/' + props.userId + '/?token=' + props.authToken + '&country=' + props.alpha2CountryCode
     const ws = new WebSocket(path);
     ws.onopen = () => {
-      // connection opened
-      console.log('opened');
+      if (Platform.OS === 'android') {
+        PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then((granted) => {
+          setCanAccessContacts(granted)
+          if (!granted) {
+            PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then(() => {
+                PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then((granted) => {
+                  setCanAccessContacts(granted)
+                  if (granted) {
+                    loadContacts(ws)
+                  } else {
+                    Alert.alert('No permission to access contacts', '', [
+                      {
+                        text: 'Cancel',
+                        style: 'cancel',
+                      },
+                      { text: 'Go to Settings', onPress: () => Linking.openSettings() },
+                    ]);
+                  }
+                }
+                );
+              })
+          } else {
+            loadContacts(ws);
+          }
+        })
+      } else {
+        loadContacts(ws);
+      }
     };
 
     ws.onmessage = message => {
@@ -47,41 +74,19 @@ export default function Authenticated(props) {
     setWs(ws)
   }
 
-  function loadContacts() {
+  function loadContacts(ws) {
     Contacts.getAll()
       .then(contacts => {
-        console.log(contacts)
+        ws.send(
+          JSON.stringify({
+            command: "fetch_registered_contacts",
+            phone_contacts: contacts
+          })
+        )
       })
   };
   React.useEffect(() => {
     connectWebSocket(props)
-    if (Platform.OS === 'android') {
-      PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then((granted) => {
-        setCanAccessContacts(granted)
-        if (!granted) {
-          PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then(() => {
-              PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then((granted) => {
-                setCanAccessContacts(granted)
-                if (granted) { loadContacts() } else {
-                  Alert.alert('No permission to access contacts', '', [
-                    {
-                      text: 'Cancel',
-                      style: 'cancel',
-                    },
-                    {text: 'Go to Settings', onPress: () => Linking.openSettings()},
-                  ]);
-                }
-              }
-              );
-            })
-        } else {
-          loadContacts()
-        }
-      })
-    } else {
-      loadContacts();
-    }
   }, [])
 
   return (
