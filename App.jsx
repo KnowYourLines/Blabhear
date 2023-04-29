@@ -1,4 +1,6 @@
 import React, {useState} from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+
 import auth from '@react-native-firebase/auth';
 import PhoneNumber from './components/PhoneNumber';
 import VerifyCode from './components/VerifyCode';
@@ -6,6 +8,7 @@ import Authenticated from './components/Authenticated';
 import RegisteredContacts from './components/RegisteredContacts';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {useNetInfo} from '@react-native-community/netinfo';
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -22,6 +25,8 @@ function App() {
       background: 'transparent',
     },
   };
+
+  const netInfo = useNetInfo();
 
   async function signIn(phoneNumber, alpha2CountryCode) {
     try {
@@ -53,6 +58,14 @@ function App() {
       setAuthenticated(false);
     }
   });
+
+  if (!netInfo.isConnected && netInfo.isConnected !== null) {
+    return (
+      <View style={styles.screen}>
+        <Text style={styles.text}>No internet connection</Text>
+      </View>
+    );
+  }
 
   if (authenticated && userId && authToken)
     return (
@@ -91,5 +104,16 @@ function App() {
 
   if (!authenticated) return <PhoneNumber onSubmit={signIn} />;
 }
+
+const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 20,
+  },
+});
 
 export default App;
