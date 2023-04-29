@@ -7,6 +7,7 @@ import {
   Platform,
   Linking,
   Alert,
+  Text
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import DisplayName from './DisplayName';
@@ -20,6 +21,7 @@ export default function Authenticated({navigation, route}) {
   const [ws, setWs] = useState(null);
   const [canAccessContacts, setCanAccessContacts] = useState(false);
   const [registeredContacts, setRegisteredContacts] = useState([]);
+  const [isConnected, setIsConnected] = useState(true);
 
   function connectWebSocket(props) {
     const backendUrl = new URL('http://localhost:8000');
@@ -38,6 +40,7 @@ export default function Authenticated({navigation, route}) {
       props.alpha2CountryCode;
     const ws = new WebSocket(path);
     ws.onopen = () => {
+      setIsConnected(true);
       if (Platform.OS === 'android') {
         PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
@@ -90,11 +93,13 @@ export default function Authenticated({navigation, route}) {
     ws.onerror = e => {
       // an error occurred
       console.log(e.message);
+      setIsConnected(false);
     };
 
     ws.onclose = e => {
       // connection closed
       console.log(e.code, e.reason);
+      setIsConnected(false);
       connectWebSocket(route.params);
     };
     setWs(ws);
@@ -113,6 +118,14 @@ export default function Authenticated({navigation, route}) {
   React.useEffect(() => {
     connectWebSocket(route.params);
   }, []);
+
+  if (!isConnected) {
+    return (
+      <View style={styles.screen}>
+        <Text style={styles.text}>Can't connect to Blabhear</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.screen}>
