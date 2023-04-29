@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, FlatList, Button} from 'react-native';
+import {View, StyleSheet, Text, FlatList, Button, Alert} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 
 export default ({navigation, route}) => {
@@ -19,9 +19,6 @@ export default ({navigation, route}) => {
   );
   return (
     <View style={styles.listContainer}>
-      <View style={styles.screen}>
-        <Text style={styles.text}>Select contacts</Text>
-      </View>
       <FlatList
         data={contacts}
         renderItem={renderItem}
@@ -34,6 +31,14 @@ export default ({navigation, route}) => {
             const result = contacts.filter(
               contact => contact.selected === true,
             );
+            if (result.length == 0){
+              Alert.alert('Please select a contact', '', [
+                {
+                  text: 'OK',
+                  style: 'OK',
+                }
+              ]);
+            }
             console.log(result);
           }}
         />
@@ -54,11 +59,6 @@ const ItemRenderer = ({index, label, selected, onUpdateValue}) => (
 );
 
 const styles = StyleSheet.create({
-  screen: {
-    marginTop: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   listContainer: {
     flex: 1,
   },
@@ -72,8 +72,5 @@ const styles = StyleSheet.create({
   title: {
     textTransform: 'capitalize',
     fontSize: 20,
-  },
-  text: {
-    fontSize: 25,
   },
 });

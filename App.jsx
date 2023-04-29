@@ -57,10 +57,7 @@ function App() {
   if (authenticated && userId && authToken)
     return (
       <NavigationContainer theme={navTheme}>
-        <Stack.Navigator
-          screenOptions={() => ({
-            headerShown: false,
-          })}>
+        <Stack.Navigator>
           <Stack.Screen
             initialParams={{
               userId: userId,
@@ -69,8 +66,23 @@ function App() {
             }}
             name="Home"
             component={Authenticated}
+            options={{headerShown: false}}
           />
-          <Stack.Screen name="Contacts" component={RegisteredContacts} />
+          <Stack.Screen
+            name="Contacts"
+            component={RegisteredContacts}
+            options={{
+              headerTitle: 'Select Contacts',
+              headerShown: true,
+              headerStyle: {
+                backgroundColor: 'transparent',
+              },
+              headerTintColor: 'white',
+              headerTitleStyle: {
+                fontWeight: 'bold',
+              },
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );
