@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
-  StyleSheet, Text, View, Button, TextInput, TouchableOpacity
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
-import { CountryPicker } from "react-native-country-codes-picker";
+import {CountryPicker} from 'react-native-country-codes-picker';
 
 export default function PhoneNumber(props) {
   const [show, setShow] = useState(true);
@@ -12,19 +18,29 @@ export default function PhoneNumber(props) {
 
   React.useEffect(() => {
     // the package is buggy and requires show state to be true before being set to false to work
-    setShow(false)
-  }, [])
+    setShow(false);
+  }, []);
 
   const inputsValid = () => {
     if (!countryDialCode.trim()) {
-      alert("Please enter country's dial code");
+      Alert.alert("Please enter country's dial code", '', [
+        {
+          text: 'OK',
+          style: 'OK',
+        },
+      ]);
       return false;
     }
     if (!phoneNumber.trim()) {
-      alert('Please enter phone number');
+      Alert.alert('Please enter phone number', '', [
+        {
+          text: 'OK',
+          style: 'OK',
+        },
+      ]);
       return false;
     }
-    return true
+    return true;
   };
 
   return (
@@ -33,26 +49,25 @@ export default function PhoneNumber(props) {
       <CountryPicker
         style={{
           modal: {
-            backgroundColor: 'lightblue'
+            backgroundColor: 'lightblue',
           },
           countryButtonStyles: {
-            backgroundColor: 'black'
+            backgroundColor: 'black',
           },
           textInput: {
             backgroundColor: 'black',
-
           },
           searchMessageText: {
-            color: 'black'
+            color: 'black',
           },
           itemsList: {
-            height: '80%'
-          }
+            height: '80%',
+          },
         }}
         show={show}
-        pickerButtonOnPress={(item) => {
-          setCountryDialCode(item.dial_code)
-          setAlpha2CountryCode(item.code)
+        pickerButtonOnPress={item => {
+          setCountryDialCode(item.dial_code);
+          setAlpha2CountryCode(item.code);
           setShow(false);
         }}
         inputPlaceholder={'Search by country or dial code'}
@@ -60,13 +75,15 @@ export default function PhoneNumber(props) {
       />
       <View style={styles.row}>
         <TouchableOpacity
-          onPress={() => { setShow(true) }}
-          style={styles.countryInput}
-        >
-          <Text style={{
-            color: 'white',
-            fontSize: 25
-          }}>
+          onPress={() => {
+            setShow(true);
+          }}
+          style={styles.countryInput}>
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 25,
+            }}>
             {countryDialCode}
           </Text>
         </TouchableOpacity>
@@ -77,8 +94,13 @@ export default function PhoneNumber(props) {
           onChangeText={setPhoneNumber}
         />
       </View>
-      <Button title="Sign In" onPress={() => { if (inputsValid()) props.onSubmit(countryDialCode + phoneNumber, alpha2CountryCode) }} />
-
+      <Button
+        title="Sign In"
+        onPress={() => {
+          if (inputsValid())
+            props.onSubmit(countryDialCode + phoneNumber, alpha2CountryCode);
+        }}
+      />
     </View>
   );
 }
