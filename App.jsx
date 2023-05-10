@@ -55,6 +55,8 @@ function App() {
       });
       setAuthenticated(true);
     } else {
+      setAuthToken('');
+      setUserId('');
       setAuthenticated(false);
     }
   });
