@@ -47,9 +47,14 @@ function App() {
       await confirm.confirm(code);
       setConfirm(null);
     } catch (error) {
-      alert(error);
+      if (error.message != "Cannot read property 'confirm' of null")
+        [alert(error)];
     }
   }
+
+  DeviceEventEmitter.addListener('confirmOTP', eventData =>
+    confirmVerificationCode(eventData.OTP),
+  );
 
   auth().onAuthStateChanged(user => {
     if (user) {
@@ -106,7 +111,18 @@ function App() {
       </NavigationContainer>
     );
 
-  if (confirm) return <VerifyCode onSubmit={confirmVerificationCode} />;
+  if (confirm)
+    return (
+      <NavigationContainer theme={navTheme}>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="OTP"
+            component={VerifyCode}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
 
   if (!authenticated)
     return (

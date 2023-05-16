@@ -15,16 +15,13 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
+    paddingVertical: '3%',
+    paddingHorizontal: '5%',
     borderRadius: 4,
-    elevation: 3,
     backgroundColor: 'blue',
   },
   text: {
-    fontSize: 16,
-    lineHeight: 21,
-    letterSpacing: 0.25,
+    fontSize: 20,
     color: 'white',
   },
 });

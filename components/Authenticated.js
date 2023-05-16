@@ -2,16 +2,16 @@ import React, {useState} from 'react';
 import {
   StyleSheet,
   View,
-  Button,
   PermissionsAndroid,
   Platform,
   Linking,
   Alert,
-  Text
+  Text,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import DisplayName from './DisplayName';
 import NewContact from './NewContact';
+import Button from './Button';
 import Contacts from 'react-native-contacts';
 
 export default function Authenticated({navigation, route}) {
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    color: 'white'
+    color: 'white',
   },
   row: {
     flexDirection: 'row',

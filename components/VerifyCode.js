@@ -1,8 +1,21 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import React, {useState} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  DeviceEventEmitter,
+} from 'react-native';
+import Button from './Button';
 
-export default function OTP(props) {
+export default function OTP() {
   const [code, setCode] = useState('');
+
+  React.useEffect(() => {
+    return () => {
+      DeviceEventEmitter.removeAllListeners('confirmOTP');
+    };
+  }, []);
 
   return (
     <View style={styles.screen}>
@@ -13,7 +26,11 @@ export default function OTP(props) {
         keyboardType="number-pad"
         style={styles.input}
       />
-      <Button title="Confirm" onPress={() => props.onSubmit(code)} /></View>
+      <Button
+        title="Confirm"
+        onPress={() => DeviceEventEmitter.emit('confirmOTP', {OTP: code})}
+      />
+    </View>
   );
 }
 
@@ -34,5 +51,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 25,
+    color: 'white',
   },
 });

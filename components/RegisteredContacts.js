@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, FlatList, Button, Alert} from 'react-native';
+import {View, StyleSheet, Text, FlatList, Alert} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
+import Button from './Button';
 
 export default ({navigation, route}) => {
   const [contacts, setContacts] = useState(route.params.contacts);
@@ -31,12 +32,12 @@ export default ({navigation, route}) => {
             const result = contacts.filter(
               contact => contact.selected === true,
             );
-            if (result.length == 0){
+            if (result.length == 0) {
               Alert.alert('Please select a contact', '', [
                 {
                   text: 'OK',
                   style: 'OK',
-                }
+                },
               ]);
             }
             console.log(result);
@@ -72,5 +73,6 @@ const styles = StyleSheet.create({
   title: {
     textTransform: 'capitalize',
     fontSize: 20,
+    color: 'white',
   },
 });
