@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, DeviceEventEmitter} from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 import PhoneNumber from './components/PhoneNumber';
@@ -37,6 +37,10 @@ function App() {
       alert(error);
     }
   }
+
+  DeviceEventEmitter.addListener('phoneSignIn', eventData =>
+    signIn(eventData.intlPhoneNum, eventData.alpha2CountryCode),
+  );
 
   async function confirmVerificationCode(code) {
     try {
@@ -104,7 +108,18 @@ function App() {
 
   if (confirm) return <VerifyCode onSubmit={confirmVerificationCode} />;
 
-  if (!authenticated) return <PhoneNumber onSubmit={signIn} />;
+  if (!authenticated)
+    return (
+      <NavigationContainer theme={navTheme}>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Phone"
+            component={PhoneNumber}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -115,7 +130,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
-    color: 'white'
+    color: 'white',
   },
 });
 

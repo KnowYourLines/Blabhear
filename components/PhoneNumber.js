@@ -6,11 +6,12 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  DeviceEventEmitter
 } from 'react-native';
 import Button from './Button'
 import {CountryPicker} from 'react-native-country-codes-picker';
 
-export default function PhoneNumber(props) {
+export default function PhoneNumber() {
   const [show, setShow] = useState(true);
   const [countryDialCode, setCountryDialCode] = useState('');
   const [alpha2CountryCode, setAlpha2CountryCode] = useState('');
@@ -19,6 +20,9 @@ export default function PhoneNumber(props) {
   React.useEffect(() => {
     // the package is buggy and requires show state to be true before being set to false to work
     setShow(false);
+    return () => {
+      DeviceEventEmitter.removeAllListeners("phoneSignIn")
+    };
   }, []);
 
   const inputsValid = () => {
@@ -105,7 +109,7 @@ export default function PhoneNumber(props) {
         title="Sign In"
         onPress={() => {
           if (inputsValid())
-            props.onSubmit(countryDialCode + phoneNumber, alpha2CountryCode);
+            DeviceEventEmitter.emit("phoneSignIn", {intlPhoneNum: countryDialCode + phoneNumber, alpha2CountryCode: alpha2CountryCode});
         }}
       />
     </View>
