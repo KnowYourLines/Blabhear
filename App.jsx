@@ -22,7 +22,7 @@ function App() {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
-      background: 'transparent',
+      background: 'black',
     },
   };
 
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 20,
+    color: 'white'
   },
 });
 

@@ -3,11 +3,11 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   TextInput,
   TouchableOpacity,
   Alert,
 } from 'react-native';
+import Button from './Button'
 import {CountryPicker} from 'react-native-country-codes-picker';
 
 export default function PhoneNumber(props) {
@@ -52,16 +52,23 @@ export default function PhoneNumber(props) {
             backgroundColor: 'lightblue',
           },
           countryButtonStyles: {
-            backgroundColor: 'black',
+            backgroundColor: 'grey',
           },
           textInput: {
-            backgroundColor: 'black',
+            backgroundColor: 'grey',
+            color: 'white'
           },
           searchMessageText: {
             color: 'black',
           },
           itemsList: {
             height: '80%',
+          },
+          dialCode: {
+            color: 'white'
+          },
+          countryName: {
+            color: 'white'
           },
         }}
         show={show}
@@ -94,7 +101,7 @@ export default function PhoneNumber(props) {
           onChangeText={setPhoneNumber}
         />
       </View>
-      <Button
+      <Button 
         title="Sign In"
         onPress={() => {
           if (inputsValid())
@@ -123,6 +130,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
     padding: 10,
     borderRadius: 8,
+    color: 'white',
+    height: '50%'
   },
   countryInput: {
     borderWidth: 2,
@@ -132,8 +141,10 @@ const styles = StyleSheet.create({
     fontSize: 25,
     padding: 10,
     borderRadius: 8,
+    height: '50%'
   },
   text: {
     fontSize: 25,
+    color: 'white',
   },
 });
