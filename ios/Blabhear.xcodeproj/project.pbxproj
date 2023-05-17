@@ -14,7 +14,7 @@
 		46F81FC0353EC7A7B22759A5 /* libPods-Blabhear.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3558E1768A70389B318432C3 /* libPods-Blabhear.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		899872AC0AE596C04850AB90 /* libPods-Blabhear-BlabhearTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FCE0C97C0C427A5EA6AE2E89 /* libPods-Blabhear-BlabhearTests.a */; };
-		F220B6DF2A118ED0007BDB83 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F220B6DE2A118ED0007BDB83 /* GoogleService-Info.plist */; };
+		F251DB942A15562100182075 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F251DB932A15562100182075 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,7 +44,8 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Blabhear/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-Blabhear-BlabhearTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Blabhear-BlabhearTests.release.xcconfig"; path = "Target Support Files/Pods-Blabhear-BlabhearTests/Pods-Blabhear-BlabhearTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F220B6DE2A118ED0007BDB83 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		F251DB902A15540500182075 /* Blabhear.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Blabhear.entitlements; path = Blabhear/Blabhear.entitlements; sourceTree = "<group>"; };
+		F251DB932A15562100182075 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FCE0C97C0C427A5EA6AE2E89 /* libPods-Blabhear-BlabhearTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Blabhear-BlabhearTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -88,6 +89,7 @@
 		13B07FAE1A68108700A75B9A /* Blabhear */ = {
 			isa = PBXGroup;
 			children = (
+				F251DB902A15540500182075 /* Blabhear.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -118,7 +120,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				F220B6DE2A118ED0007BDB83 /* GoogleService-Info.plist */,
+				F251DB932A15562100182075 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* Blabhear */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* BlabhearTests */,
@@ -248,7 +250,7 @@
 			files = (
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				F220B6DF2A118ED0007BDB83 /* GoogleService-Info.plist in Resources */,
+				F251DB942A15562100182075 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -451,7 +453,7 @@
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-Blabhear-BlabhearTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = YLF8C5S9RS;
+				DEVELOPMENT_TEAM = DW24UHST3W;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -480,7 +482,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
-				DEVELOPMENT_TEAM = YLF8C5S9RS;
+				DEVELOPMENT_TEAM = DW24UHST3W;
 				INFOPLIST_FILE = BlabhearTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -505,8 +507,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Blabhear/Blabhear.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = YLF8C5S9RS;
+				DEVELOPMENT_TEAM = DW24UHST3W;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Blabhear/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -519,8 +524,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.iOS.Blabhear;
 				PRODUCT_NAME = Blabhear;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -533,8 +539,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Blabhear/Blabhear.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = YLF8C5S9RS;
+				DEVELOPMENT_TEAM = DW24UHST3W;
 				INFOPLIST_FILE = Blabhear/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -546,8 +555,9 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.iOS.Blabhear;
 				PRODUCT_NAME = Blabhear;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

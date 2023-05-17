@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, DeviceEventEmitter} from 'react-native';
+import {View, Text, StyleSheet, DeviceEventEmitter, Alert} from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 import PhoneNumber from './components/PhoneNumber';
@@ -34,7 +34,11 @@ function App() {
       setConfirm(confirmation);
       setAlpha2CountryCode(alpha2CountryCode);
     } catch (error) {
-      alert(error);
+      if (
+        error.message !=
+        '[auth/cancelled-popup-request] User interaction is still ongoing, another view cannot be presented.'
+      )
+        Alert.alert(error.message);
     }
   }
 
@@ -48,7 +52,7 @@ function App() {
       setConfirm(null);
     } catch (error) {
       if (error.message != "Cannot read property 'confirm' of null")
-        [alert(error)];
+        Alert.alert(error.message);
     }
   }
 

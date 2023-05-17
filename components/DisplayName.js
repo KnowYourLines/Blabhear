@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     padding: 10,
     borderRadius: 8,
+    color: 'white',
   },
   editButtons: {
     width: '30%',
