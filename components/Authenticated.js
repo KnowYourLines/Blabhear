@@ -13,6 +13,7 @@ import DisplayName from './DisplayName';
 import NewContact from './NewContact';
 import Button from './Button';
 import Contacts from 'react-native-contacts';
+import Config from 'react-native-config';
 
 export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
@@ -24,7 +25,7 @@ export default function Authenticated({navigation, route}) {
   const [isConnected, setIsConnected] = useState(true);
 
   function connectWebSocket(props) {
-    const backendUrl = new URL('http://localhost:8000');
+    const backendUrl = new URL(Config.BACKEND_URL);
     const ws_scheme = backendUrl.protocol == 'https:' ? 'wss' : 'ws';
     const path =
       ws_scheme +
