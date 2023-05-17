@@ -74,6 +74,33 @@ export default function Authenticated({navigation, route}) {
             loadContacts(ws);
           }
         });
+      } else if (Platform.OS == 'ios') {
+        Contacts.checkPermission().then(permission => {
+          const granted = permission === Contacts.PERMISSION_AUTHORIZED;
+          if (!granted) {
+            Contacts.requestPermission().then(permission => {
+              const granted = permission === Contacts.PERMISSION_AUTHORIZED;
+              if (granted) {
+                setCanAccessContacts(granted);
+                loadContacts(ws);
+              } else {
+                Alert.alert('No permission to access contacts', '', [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Go to Settings',
+                    onPress: () => Linking.openSettings(),
+                  },
+                ]);
+              }
+            });
+          } else {
+            setCanAccessContacts(granted);
+            loadContacts(ws);
+          }
+        });
       } else {
         loadContacts(ws);
       }
