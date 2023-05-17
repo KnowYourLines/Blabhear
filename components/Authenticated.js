@@ -182,9 +182,10 @@ export default function Authenticated({navigation, route}) {
       <View style={{marginTop: 30}}>
         <Button
           title="New chat"
-          onPress={() =>
-            navigation.navigate('Contacts', {contacts: registeredContacts})
-          }
+          onPress={() => {
+            loadContacts(ws);
+            navigation.navigate('Contacts', {contacts: registeredContacts});
+          }}
         />
       </View>
       <View style={{marginTop: 30}}>

@@ -25,7 +25,7 @@ export default ({navigation, route}) => {
         renderItem={renderItem}
         keyExtractor={item => item.display_name || item.phone_number}
       />
-      <View style={{marginTop: 30}}>
+      <View style={{marginBottom: '5%'}}>
         <Button
           title="Chat"
           onPress={() => {
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'white',
   },
   title: {
-    textTransform: 'capitalize',
+    paddingLeft: '5%',
     fontSize: 20,
     color: 'white',
   },
