@@ -20,11 +20,12 @@ export default function Authenticated({navigation, route}) {
   const [editableDisplayName, setEditableDisplayName] = useState('');
   const [editName, setEditName] = useState(false);
   const [userWs, setUserWs] = useState(null);
+  const [roomWs, setRoomWs] = useState(null);
   const [canAccessContacts, setCanAccessContacts] = useState(false);
   const [registeredContacts, setRegisteredContacts] = useState([]);
   const [isConnected, setIsConnected] = useState(true);
 
-  function connectWebSocket(props) {
+  function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);
     const ws_scheme = backendUrl.protocol == 'https:' ? 'wss' : 'ws';
     const path =
@@ -39,8 +40,8 @@ export default function Authenticated({navigation, route}) {
       props.authToken +
       '&country=' +
       props.alpha2CountryCode;
-    const userWs = new WebSocket(path);
-    userWs.onopen = () => {
+    const ws = new WebSocket(path);
+    ws.onopen = () => {
       setIsConnected(true);
       if (Platform.OS === 'android') {
         PermissionsAndroid.check(
@@ -56,7 +57,7 @@ export default function Authenticated({navigation, route}) {
               ).then(granted => {
                 setCanAccessContacts(granted);
                 if (granted) {
-                  loadContacts(userWs);
+                  loadContacts(ws);
                 } else {
                   Alert.alert('No permission to access contacts', '', [
                     {
@@ -72,7 +73,7 @@ export default function Authenticated({navigation, route}) {
               });
             });
           } else {
-            loadContacts(userWs);
+            loadContacts(ws);
           }
         });
       } else if (Platform.OS == 'ios') {
@@ -83,7 +84,7 @@ export default function Authenticated({navigation, route}) {
               const granted = permission === Contacts.PERMISSION_AUTHORIZED;
               if (granted) {
                 setCanAccessContacts(granted);
-                loadContacts(userWs);
+                loadContacts(ws);
               } else {
                 Alert.alert('No permission to access contacts', '', [
                   {
@@ -99,15 +100,15 @@ export default function Authenticated({navigation, route}) {
             });
           } else {
             setCanAccessContacts(granted);
-            loadContacts(userWs);
+            loadContacts(ws);
           }
         });
       } else {
-        loadContacts(userWs);
+        loadContacts(ws);
       }
     };
 
-    userWs.onmessage = message => {
+    ws.onmessage = message => {
       console.log(message.data);
       const data = JSON.parse(message.data);
       if ('display_name' in data) {
@@ -118,19 +119,53 @@ export default function Authenticated({navigation, route}) {
       }
     };
 
-    userWs.onerror = e => {
+    ws.onerror = e => {
       // an error occurred
       console.log(e.message);
       setIsConnected(false);
     };
 
-    userWs.onclose = e => {
+    ws.onclose = e => {
       // connection closed
       console.log(e.code, e.reason);
       setIsConnected(false);
-      connectWebSocket(route.params);
+      connectUserWebSocket(route.params);
     };
-    setUserWs(userWs);
+    setUserWs(ws);
+  }
+
+  function connectRoomWebSocket(props) {
+    const backendUrl = new URL(Config.BACKEND_URL);
+    const ws_scheme = backendUrl.protocol == 'https:' ? 'wss' : 'ws';
+    const path =
+      ws_scheme +
+      '://' +
+      backendUrl.hostname +
+      ':' +
+      backendUrl.port +
+      '/ws/room/?token=' +
+      props.authToken;
+    const ws = new WebSocket(path);
+    ws.onopen = () => {
+      console.log('opened room websocket');
+    };
+
+    ws.onmessage = message => {
+      const data = JSON.parse(message.data);
+      console.log(data);
+    };
+
+    ws.onerror = e => {
+      // an error occurred
+      console.log(e.message);
+    };
+
+    ws.onclose = e => {
+      // connection closed
+      console.log(e.code, e.reason);
+      connectRoomWebSocket(route.params);
+    };
+    setRoomWs(ws);
   }
 
   function loadContacts(ws) {
@@ -144,7 +179,9 @@ export default function Authenticated({navigation, route}) {
     });
   }
   React.useEffect(() => {
-    connectWebSocket(route.params);
+    connectUserWebSocket(route.params);
+    console.log(route.params);
+    connectRoomWebSocket(route.params);
   }, []);
 
   if (!isConnected) {
