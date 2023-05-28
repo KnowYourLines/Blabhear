@@ -19,7 +19,7 @@ export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
   const [editableDisplayName, setEditableDisplayName] = useState('');
   const [editName, setEditName] = useState(false);
-  const [ws, setWs] = useState(null);
+  const [userWs, setUserWs] = useState(null);
   const [canAccessContacts, setCanAccessContacts] = useState(false);
   const [registeredContacts, setRegisteredContacts] = useState([]);
   const [isConnected, setIsConnected] = useState(true);
@@ -39,8 +39,8 @@ export default function Authenticated({navigation, route}) {
       props.authToken +
       '&country=' +
       props.alpha2CountryCode;
-    const ws = new WebSocket(path);
-    ws.onopen = () => {
+    const userWs = new WebSocket(path);
+    userWs.onopen = () => {
       setIsConnected(true);
       if (Platform.OS === 'android') {
         PermissionsAndroid.check(
@@ -56,7 +56,7 @@ export default function Authenticated({navigation, route}) {
               ).then(granted => {
                 setCanAccessContacts(granted);
                 if (granted) {
-                  loadContacts(ws);
+                  loadContacts(userWs);
                 } else {
                   Alert.alert('No permission to access contacts', '', [
                     {
@@ -72,7 +72,7 @@ export default function Authenticated({navigation, route}) {
               });
             });
           } else {
-            loadContacts(ws);
+            loadContacts(userWs);
           }
         });
       } else if (Platform.OS == 'ios') {
@@ -83,7 +83,7 @@ export default function Authenticated({navigation, route}) {
               const granted = permission === Contacts.PERMISSION_AUTHORIZED;
               if (granted) {
                 setCanAccessContacts(granted);
-                loadContacts(ws);
+                loadContacts(userWs);
               } else {
                 Alert.alert('No permission to access contacts', '', [
                   {
@@ -99,15 +99,15 @@ export default function Authenticated({navigation, route}) {
             });
           } else {
             setCanAccessContacts(granted);
-            loadContacts(ws);
+            loadContacts(userWs);
           }
         });
       } else {
-        loadContacts(ws);
+        loadContacts(userWs);
       }
     };
 
-    ws.onmessage = message => {
+    userWs.onmessage = message => {
       console.log(message.data);
       const data = JSON.parse(message.data);
       if ('display_name' in data) {
@@ -118,19 +118,19 @@ export default function Authenticated({navigation, route}) {
       }
     };
 
-    ws.onerror = e => {
+    userWs.onerror = e => {
       // an error occurred
       console.log(e.message);
       setIsConnected(false);
     };
 
-    ws.onclose = e => {
+    userWs.onclose = e => {
       // connection closed
       console.log(e.code, e.reason);
       setIsConnected(false);
       connectWebSocket(route.params);
     };
-    setWs(ws);
+    setUserWs(userWs);
   }
 
   function loadContacts(ws) {
@@ -167,7 +167,7 @@ export default function Authenticated({navigation, route}) {
           setEditableDisplayName(displayName);
         }}
         onSave={() => {
-          ws.send(
+          userWs.send(
             JSON.stringify({
               command: 'update_display_name',
               name: editableDisplayName,
@@ -184,7 +184,7 @@ export default function Authenticated({navigation, route}) {
         <Button
           title="New chat"
           onPress={() => {
-            loadContacts(ws);
+            loadContacts(userWs);
             navigation.navigate('Contacts', {contacts: registeredContacts});
           }}
         />
