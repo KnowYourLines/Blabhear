@@ -7,6 +7,7 @@ import VerifyCode from './components/VerifyCode';
 import Authenticated from './components/Authenticated';
 import RegisteredContacts from './components/RegisteredContacts';
 import Room from './components/Room';
+import RoomMembers from './components/RoomMembers';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -120,6 +121,21 @@ function App() {
               component={Room}
               options={{
                 headerTitle: 'Room',
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: 'transparent',
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                },
+              }}
+            />
+            <Stack.Screen
+              name="Members"
+              component={RoomMembers}
+              options={{
+                headerTitle: 'Members',
                 headerShown: true,
                 headerStyle: {
                   backgroundColor: 'transparent',

@@ -4,7 +4,7 @@ import CheckBox from '@react-native-community/checkbox';
 import Button from './Button';
 import {RoomWsContext} from '../context/RoomWsContext';
 
-export default ({navigation, route}) => {
+export default ({route}) => {
   const state = useContext(RoomWsContext);
   const [contacts, setContacts] = useState(route.params.contacts);
   onUpdateValue = (index, value) => {
