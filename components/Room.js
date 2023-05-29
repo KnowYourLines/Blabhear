@@ -4,18 +4,18 @@ import {HeaderBackButton} from '@react-navigation/elements';
 import {RoomNameContext} from '../context/RoomNameContext';
 
 export default ({navigation, route}) => {
-  const roomNameState = useContext(RoomNameContext);
+  const state = useContext(RoomNameContext);
   const [members, setMembers] = useState(route.params.members);
   React.useEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
         <View style={styles.row}>
-          <Text style={styles.titleText}>{roomNameState.roomName}</Text>
+          <Text style={styles.titleText}>{state.roomName}</Text>
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => {
               navigation.navigate('RoomName', {
-                name: roomNameState.roomName,
+                name: state.roomName,
                 members: members,
               });
             }}>
@@ -46,7 +46,7 @@ export default ({navigation, route}) => {
         );
       },
     });
-  }, [navigation, roomNameState.roomName]);
+  }, [navigation, state.roomName]);
   return <View style={styles.listContainer}></View>;
 };
 
