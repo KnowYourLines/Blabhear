@@ -36,11 +36,11 @@ function App() {
 
   const netInfo = useNetInfo();
 
-  async function signIn(phoneNumber, alpha2CountryCode) {
+  async function signIn(phoneNumber, countryCode) {
     try {
       const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
       setConfirm(confirmation);
-      setAlpha2CountryCode(alpha2CountryCode);
+      setAlpha2CountryCode(countryCode);
     } catch (error) {
       console.log(error.message);
     }
