@@ -6,6 +6,7 @@ import PhoneNumber from './components/PhoneNumber';
 import VerifyCode from './components/VerifyCode';
 import Authenticated from './components/Authenticated';
 import RegisteredContacts from './components/RegisteredContacts';
+import Room from './components/Room';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -104,6 +105,21 @@ function App() {
               component={RegisteredContacts}
               options={{
                 headerTitle: 'Select Contacts',
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: 'transparent',
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                },
+              }}
+            />
+            <Stack.Screen
+              name="Room"
+              component={Room}
+              options={{
+                headerTitle: 'Room',
                 headerShown: true,
                 headerStyle: {
                   backgroundColor: 'transparent',

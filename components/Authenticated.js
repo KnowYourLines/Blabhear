@@ -154,6 +154,12 @@ export default function Authenticated({navigation, route}) {
     ws.onmessage = message => {
       const data = JSON.parse(message.data);
       console.log(data);
+      if ('new_room' == data.type) {
+        navigation.navigate('Room', {
+          members: data.room_members,
+          name: data.room_name,
+        });
+      }
     };
 
     ws.onerror = e => {
