@@ -1,19 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
 import {HeaderBackButton} from '@react-navigation/elements';
+import {RoomNameContext} from '../context/RoomNameContext';
 
 export default ({navigation, route}) => {
-  const [name, setName] = useState(route.params.name);
+  const roomNameState = useContext(RoomNameContext);
   const [members, setMembers] = useState(route.params.members);
   React.useEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
         <View style={styles.row}>
-          <Text style={styles.titleText}>{name}</Text>
+          <Text style={styles.titleText}>{roomNameState.roomName}</Text>
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => {
-              navigation.navigate('RoomName', {name: name});
+              navigation.navigate('RoomName', {
+                name: roomNameState.roomName,
+                members: members,
+              });
             }}>
             <Image source={require('../assets/icons8-edit-24.png')} />
           </TouchableOpacity>
@@ -42,7 +46,7 @@ export default ({navigation, route}) => {
         );
       },
     });
-  }, [navigation, name]);
+  }, [navigation, roomNameState.roomName]);
   return <View style={styles.listContainer}></View>;
 };
 

@@ -27,6 +27,9 @@ export default function RoomName({navigation, route}) {
               name: editableDisplayName,
             }),
           );
+          navigation.navigate('Room', {
+            members: route.params.members,
+          });
         }}></DisplayName>
     </View>
   );

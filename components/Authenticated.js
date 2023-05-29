@@ -15,6 +15,7 @@ import Button from './Button';
 import Contacts from 'react-native-contacts';
 import Config from 'react-native-config';
 import {RoomWsContext} from '../context/RoomWsContext';
+import {RoomNameContext} from '../context/RoomNameContext';
 
 export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
@@ -25,6 +26,7 @@ export default function Authenticated({navigation, route}) {
   const [registeredContacts, setRegisteredContacts] = useState([]);
   const [isConnected, setIsConnected] = useState(true);
   const state = useContext(RoomWsContext);
+  const roomNameState = useContext(RoomNameContext);
 
   function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);
@@ -155,10 +157,12 @@ export default function Authenticated({navigation, route}) {
       const data = JSON.parse(message.data);
       console.log(data);
       if ('new_room' == data.type) {
+        roomNameState.setRoomName(data.room_name);
         navigation.navigate('Room', {
           members: data.room_members,
-          name: data.room_name,
         });
+      } else if ('updated_room_name' == data.type) {
+        roomNameState.setRoomName(data.room_name);
       }
     };
 
