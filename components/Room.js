@@ -1,5 +1,5 @@
 import React, {useState, useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {View, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
 import {RoomWsContext} from '../context/RoomWsContext';
 import {HeaderBackButton} from '@react-navigation/elements';
 
@@ -9,7 +9,19 @@ export default ({navigation, route}) => {
   const [members, setMembers] = useState(route.params.members);
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: name,
+      headerTitle: () => (
+        <View style={styles.row}>
+          <Text style={styles.titleText}>{name}</Text>
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => {
+              console.log('hello world');
+            }}>
+            <Image source={require('../assets/icons8-edit-24.png')} />
+          </TouchableOpacity>
+        </View>
+      ),
+      headerBackVisible: false,
       headerLeft: props => (
         <HeaderBackButton
           {...props}
@@ -42,5 +54,18 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'white',
+  },
+  titleText: {
+    fontSize: 20,
+    color: 'white',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  editButton: {
+    backgroundColor: 'white',
+    borderRadius: 5,
   },
 });
