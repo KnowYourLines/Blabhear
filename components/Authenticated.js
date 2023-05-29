@@ -22,7 +22,6 @@ export default function Authenticated({navigation, route}) {
   const [editName, setEditName] = useState(false);
   const [userWs, setUserWs] = useState(null);
   const [canAccessContacts, setCanAccessContacts] = useState(false);
-  const [registeredContacts, setRegisteredContacts] = useState([]);
   const [isConnected, setIsConnected] = useState(true);
   const state = useContext(AppContext);
 
@@ -116,7 +115,7 @@ export default function Authenticated({navigation, route}) {
         setDisplayName(data.display_name);
         setEditableDisplayName(data.display_name);
       } else if ('registered_contacts' in data) {
-        setRegisteredContacts(data.registered_contacts);
+        state.setRegisteredContacts(data.registered_contacts)
       }
     };
 
@@ -222,7 +221,7 @@ export default function Authenticated({navigation, route}) {
           title="New chat"
           onPress={() => {
             loadContacts(userWs);
-            navigation.navigate('Contacts', {contacts: registeredContacts});
+            navigation.navigate('Contacts');
           }}
         />
       </View>
