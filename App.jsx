@@ -9,7 +9,7 @@ import RegisteredContacts from './components/RegisteredContacts';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {AppContextProvider} from './AppContext';
+import {RoomWsContextProvider} from './context/RoomWsContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -87,7 +87,7 @@ function App() {
   if (authenticated && userId && authToken)
     return (
       <NavigationContainer theme={navTheme}>
-        <AppContextProvider>
+        <RoomWsContextProvider>
           <Stack.Navigator>
             <Stack.Screen
               initialParams={{
@@ -115,7 +115,7 @@ function App() {
               }}
             />
           </Stack.Navigator>
-        </AppContextProvider>
+        </RoomWsContextProvider>
       </NavigationContainer>
     );
 

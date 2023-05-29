@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 
-export const AppContext = React.createContext({
+export const RoomWsContext = React.createContext({
   roomWs: null,
   setRoomWs: () => {},
 });
 
-export const AppContextProvider = props => {
+export const RoomWsContextProvider = props => {
   const setRoomWs = roomWs => {
     setState({...state, roomWs: roomWs});
   };
@@ -18,6 +18,6 @@ export const AppContextProvider = props => {
   const [state, setState] = useState(initState);
 
   return (
-    <AppContext.Provider value={state}>{props.children}</AppContext.Provider>
+    <RoomWsContext.Provider value={state}>{props.children}</RoomWsContext.Provider>
   );
 };

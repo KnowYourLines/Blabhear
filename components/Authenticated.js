@@ -14,7 +14,7 @@ import NewContact from './NewContact';
 import Button from './Button';
 import Contacts from 'react-native-contacts';
 import Config from 'react-native-config';
-import {AppContext} from '../AppContext';
+import {RoomWsContext} from '../context/RoomWsContext';
 
 export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
@@ -24,7 +24,7 @@ export default function Authenticated({navigation, route}) {
   const [canAccessContacts, setCanAccessContacts] = useState(false);
   const [registeredContacts, setRegisteredContacts] = useState([]);
   const [isConnected, setIsConnected] = useState(true);
-  const state = useContext(AppContext);
+  const state = useContext(RoomWsContext);
 
   function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);

@@ -2,10 +2,10 @@ import React, {useState, useContext} from 'react';
 import {View, StyleSheet, Text, FlatList, Alert} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import Button from './Button';
-import {AppContext} from '../AppContext';
+import {RoomWsContext} from '../context/RoomWsContext';
 
 export default ({navigation, route}) => {
-  const state = useContext(AppContext);
+  const state = useContext(RoomWsContext);
   const [contacts, setContacts] = useState(route.params.contacts);
   onUpdateValue = (index, value) => {
     contacts[index].selected = value;
@@ -41,8 +41,13 @@ export default ({navigation, route}) => {
                   style: 'OK',
                 },
               ]);
+            } else {
+              state.roomWs.send(
+                JSON.stringify({
+                  command: 'connect',
+                }),
+              );
             }
-            console.log(result);
           }}
         />
       </View>
