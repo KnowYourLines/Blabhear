@@ -6,7 +6,7 @@ import {AppContext} from '../AppContext';
 
 export default ({navigation, route}) => {
   const state = useContext(AppContext);
-  const [contacts, setContacts] = useState(state.registeredContacts);
+  const [contacts, setContacts] = useState(route.params.contacts);
   onUpdateValue = (index, value) => {
     contacts[index].selected = value;
     return setContacts([...contacts]);
