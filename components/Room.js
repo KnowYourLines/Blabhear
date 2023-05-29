@@ -8,21 +8,30 @@ export default ({navigation, route}) => {
   const [members, setMembers] = useState(route.params.members);
   React.useEffect(() => {
     navigation.setOptions({
-      headerTitle: () => (
-        <View style={styles.row}>
-          <Text style={styles.titleText}>{state.roomName}</Text>
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => {
-              navigation.navigate('RoomName', {
-                name: state.roomName,
-                members: members,
-              });
-            }}>
-            <Image source={require('../assets/icons8-edit-24.png')} />
-          </TouchableOpacity>
-        </View>
-      ),
+      headerTitle: () => {
+        if (members.length == 2) {
+          return (
+            <View style={styles.row}>
+              <Text style={styles.titleText}>{state.roomName}</Text>
+            </View>
+          );
+        }
+        return (
+          <View style={styles.row}>
+            <Text style={styles.titleText}>{state.roomName}</Text>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => {
+                navigation.navigate('RoomName', {
+                  name: state.roomName,
+                  members: members,
+                });
+              }}>
+              <Image source={require('../assets/icons8-edit-24.png')} />
+            </TouchableOpacity>
+          </View>
+        );
+      },
       headerBackVisible: false,
       headerLeft: props => (
         <HeaderBackButton
