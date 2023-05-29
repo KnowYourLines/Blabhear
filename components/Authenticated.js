@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   StyleSheet,
   View,
@@ -14,16 +14,17 @@ import NewContact from './NewContact';
 import Button from './Button';
 import Contacts from 'react-native-contacts';
 import Config from 'react-native-config';
+import {AppContext} from '../AppContext';
 
 export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
   const [editableDisplayName, setEditableDisplayName] = useState('');
   const [editName, setEditName] = useState(false);
   const [userWs, setUserWs] = useState(null);
-  const [roomWs, setRoomWs] = useState(null);
   const [canAccessContacts, setCanAccessContacts] = useState(false);
   const [registeredContacts, setRegisteredContacts] = useState([]);
   const [isConnected, setIsConnected] = useState(true);
+  const state = useContext(AppContext);
 
   function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);
@@ -165,7 +166,7 @@ export default function Authenticated({navigation, route}) {
       console.log(e.code, e.reason);
       connectRoomWebSocket(route.params);
     };
-    setRoomWs(ws);
+    state.setRoomWs(ws);
   }
 
   function loadContacts(ws) {
@@ -180,7 +181,6 @@ export default function Authenticated({navigation, route}) {
   }
   React.useEffect(() => {
     connectUserWebSocket(route.params);
-    console.log(route.params);
     connectRoomWebSocket(route.params);
   }, []);
 

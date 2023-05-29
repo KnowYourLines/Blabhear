@@ -9,6 +9,8 @@ import RegisteredContacts from './components/RegisteredContacts';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useNetInfo} from '@react-native-community/netinfo';
+import {AppContextProvider} from './AppContext';
+
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -85,33 +87,35 @@ function App() {
   if (authenticated && userId && authToken)
     return (
       <NavigationContainer theme={navTheme}>
-        <Stack.Navigator>
-          <Stack.Screen
-            initialParams={{
-              userId: userId,
-              authToken: authToken,
-              alpha2CountryCode: alpha2CountryCode,
-            }}
-            name="Home"
-            component={Authenticated}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen
-            name="Contacts"
-            component={RegisteredContacts}
-            options={{
-              headerTitle: 'Select Contacts',
-              headerShown: true,
-              headerStyle: {
-                backgroundColor: 'transparent',
-              },
-              headerTintColor: 'white',
-              headerTitleStyle: {
-                fontWeight: 'bold',
-              },
-            }}
-          />
-        </Stack.Navigator>
+        <AppContextProvider>
+          <Stack.Navigator>
+            <Stack.Screen
+              initialParams={{
+                userId: userId,
+                authToken: authToken,
+                alpha2CountryCode: alpha2CountryCode,
+              }}
+              name="Home"
+              component={Authenticated}
+              options={{headerShown: false}}
+            />
+            <Stack.Screen
+              name="Contacts"
+              component={RegisteredContacts}
+              options={{
+                headerTitle: 'Select Contacts',
+                headerShown: true,
+                headerStyle: {
+                  backgroundColor: 'transparent',
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                  fontWeight: 'bold',
+                },
+              }}
+            />
+          </Stack.Navigator>
+        </AppContextProvider>
       </NavigationContainer>
     );
 

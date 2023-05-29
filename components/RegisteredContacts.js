@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, StyleSheet, Text, FlatList, Alert} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import Button from './Button';
+import {AppContext} from '../AppContext';
 
 export default ({navigation, route}) => {
+  const state = useContext(AppContext);
   const [contacts, setContacts] = useState(route.params.contacts);
   onUpdateValue = (index, value) => {
     contacts[index].selected = value;
