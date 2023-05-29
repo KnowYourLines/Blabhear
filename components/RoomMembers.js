@@ -1,10 +1,19 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, StyleSheet, Text, FlatList} from 'react-native';
+import {ConnectedContext} from '../context/ConnectedContext';
 
 export default ({route}) => {
   const [members, setMembers] = useState(route.params.members);
-  console.log(members);
+  const connectedState = useContext(ConnectedContext);
+
   renderItem = ({item}) => <ItemRenderer label={item.display_name} />;
+  if (!connectedState.connected) {
+    return (
+      <View style={styles.screen}>
+        <Text style={styles.text}>Can't connect to Blabhear</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.listContainer}>
       <FlatList
@@ -23,6 +32,15 @@ const ItemRenderer = ({label}) => (
 );
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 20,
+    color: 'white',
+  },
   listContainer: {
     flex: 1,
   },

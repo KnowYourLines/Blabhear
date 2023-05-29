@@ -2,10 +2,13 @@ import React, {useState, useContext} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
 import {HeaderBackButton} from '@react-navigation/elements';
 import {RoomNameContext} from '../context/RoomNameContext';
+import {ConnectedContext} from '../context/ConnectedContext';
 
 export default ({navigation, route}) => {
   const state = useContext(RoomNameContext);
   const [members, setMembers] = useState(route.params.members);
+  const connectedState = useContext(ConnectedContext);
+
   React.useEffect(() => {
     navigation.setOptions({
       headerTitle: () => {
@@ -56,10 +59,26 @@ export default ({navigation, route}) => {
       },
     });
   }, [navigation, state.roomName]);
+  if (!connectedState.connected) {
+    return (
+      <View style={styles.screen}>
+        <Text style={styles.screenText}>Can't connect to Blabhear</Text>
+      </View>
+    );
+  }
   return <View style={styles.listContainer}></View>;
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  screenText: {
+    fontSize: 20,
+    color: 'white',
+  },
   listContainer: {
     flex: 1,
   },

@@ -15,6 +15,7 @@ import {useNetInfo} from '@react-native-community/netinfo';
 import {RoomWsContextProvider} from './context/RoomWsContext';
 import {RoomNameContextProvider} from './context/RoomNameContext';
 import {ContactsContextProvider} from './context/ContactsContext';
+import {ConnectedContextProvider} from './context/ConnectedContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -93,74 +94,76 @@ function App() {
     return (
       <NavigationContainer theme={navTheme}>
         <RoomWsContextProvider>
-          <ContactsContextProvider>
-            <RoomNameContextProvider>
-              <Stack.Navigator>
-                <Stack.Screen
-                  initialParams={{
-                    userId: userId,
-                    authToken: authToken,
-                    alpha2CountryCode: alpha2CountryCode,
-                  }}
-                  name="Home"
-                  component={Authenticated}
-                  options={{headerShown: false}}
-                />
-                <Stack.Screen
-                  name="Contacts"
-                  component={RegisteredContacts}
-                  options={{
-                    headerTitle: 'Select Contacts',
-                    headerShown: true,
-                    headerStyle: {
-                      backgroundColor: 'transparent',
-                    },
-                    headerTintColor: 'white',
-                    headerTitleStyle: {
-                      fontWeight: 'bold',
-                    },
-                  }}
-                />
-                <Stack.Screen
-                  name="Room"
-                  component={Room}
-                  options={{
-                    headerTitle: 'Room',
-                    headerShown: true,
-                    headerStyle: {
-                      backgroundColor: 'transparent',
-                    },
-                    headerTintColor: 'white',
-                    headerTitleStyle: {
-                      fontWeight: 'bold',
-                    },
-                  }}
-                />
-                <Stack.Screen
-                  name="Members"
-                  component={RoomMembers}
-                  options={{
-                    headerTitle: 'Members',
-                    headerShown: true,
-                    headerStyle: {
-                      backgroundColor: 'transparent',
-                    },
-                    headerTintColor: 'white',
-                    headerTitleStyle: {
-                      fontWeight: 'bold',
-                    },
-                  }}
-                />
-                <Stack.Screen
-                  name="RoomName"
-                  component={RoomName}
-                  options={{
-                    headerShown: false,
-                  }}
-                />
-              </Stack.Navigator>
-            </RoomNameContextProvider>
-          </ContactsContextProvider>
+          <ConnectedContextProvider>
+            <ContactsContextProvider>
+              <RoomNameContextProvider>
+                <Stack.Navigator>
+                  <Stack.Screen
+                    initialParams={{
+                      userId: userId,
+                      authToken: authToken,
+                      alpha2CountryCode: alpha2CountryCode,
+                    }}
+                    name="Home"
+                    component={Authenticated}
+                    options={{headerShown: false}}
+                  />
+                  <Stack.Screen
+                    name="Contacts"
+                    component={RegisteredContacts}
+                    options={{
+                      headerTitle: 'Select Contacts',
+                      headerShown: true,
+                      headerStyle: {
+                        backgroundColor: 'transparent',
+                      },
+                      headerTintColor: 'white',
+                      headerTitleStyle: {
+                        fontWeight: 'bold',
+                      },
+                    }}
+                  />
+                  <Stack.Screen
+                    name="Room"
+                    component={Room}
+                    options={{
+                      headerTitle: 'Room',
+                      headerShown: true,
+                      headerStyle: {
+                        backgroundColor: 'transparent',
+                      },
+                      headerTintColor: 'white',
+                      headerTitleStyle: {
+                        fontWeight: 'bold',
+                      },
+                    }}
+                  />
+                  <Stack.Screen
+                    name="Members"
+                    component={RoomMembers}
+                    options={{
+                      headerTitle: 'Members',
+                      headerShown: true,
+                      headerStyle: {
+                        backgroundColor: 'transparent',
+                      },
+                      headerTintColor: 'white',
+                      headerTitleStyle: {
+                        fontWeight: 'bold',
+                      },
+                    }}
+                  />
+                  <Stack.Screen
+                    name="RoomName"
+                    component={RoomName}
+                    options={{
+                      headerShown: false,
+                    }}
+                  />
+                </Stack.Navigator>
+              </RoomNameContextProvider>
+            </ContactsContextProvider>
+          </ConnectedContextProvider>
         </RoomWsContextProvider>
       </NavigationContainer>
     );

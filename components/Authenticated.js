@@ -17,6 +17,7 @@ import Config from 'react-native-config';
 import {RoomWsContext} from '../context/RoomWsContext';
 import {RoomNameContext} from '../context/RoomNameContext';
 import {ContactsContext} from '../context/ContactsContext';
+import {ConnectedContext} from '../context/ConnectedContext';
 
 export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
@@ -24,10 +25,10 @@ export default function Authenticated({navigation, route}) {
   const [editName, setEditName] = useState(false);
   const [userWs, setUserWs] = useState(null);
   const [canAccessContacts, setCanAccessContacts] = useState(false);
-  const [isConnected, setIsConnected] = useState(true);
   const state = useContext(RoomWsContext);
   const roomNameState = useContext(RoomNameContext);
   const contactsState = useContext(ContactsContext);
+  const connectedState = useContext(ConnectedContext);
 
   function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);
@@ -46,7 +47,7 @@ export default function Authenticated({navigation, route}) {
       props.alpha2CountryCode;
     const ws = new WebSocket(path);
     ws.onopen = () => {
-      setIsConnected(true);
+      connectedState.setConnected(true);
       if (Platform.OS === 'android') {
         PermissionsAndroid.check(
           PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
@@ -126,13 +127,13 @@ export default function Authenticated({navigation, route}) {
     ws.onerror = e => {
       // an error occurred
       console.log(e.message);
-      setIsConnected(false);
+      connectedState.setConnected(false);
     };
 
     ws.onclose = e => {
       // connection closed
       console.log(e.code, e.reason);
-      setIsConnected(false);
+      connectedState.setConnected(false);
       connectUserWebSocket(route.params);
     };
     setUserWs(ws);
@@ -195,7 +196,7 @@ export default function Authenticated({navigation, route}) {
     connectRoomWebSocket(route.params);
   }, []);
 
-  if (!isConnected) {
+  if (!connectedState.connected) {
     return (
       <View style={styles.screen}>
         <Text style={styles.text}>Can't connect to Blabhear</Text>

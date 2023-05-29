@@ -4,10 +4,12 @@ import CheckBox from '@react-native-community/checkbox';
 import Button from './Button';
 import {RoomWsContext} from '../context/RoomWsContext';
 import {ContactsContext} from '../context/ContactsContext';
+import {ConnectedContext} from '../context/ConnectedContext';
 
 export default () => {
   const state = useContext(RoomWsContext);
   const contactsState = useContext(ContactsContext);
+  const connectedState = useContext(ConnectedContext);
   onUpdateValue = (index, value) => {
     const contacts = contactsState.contacts;
     contacts[index].selected = value;
@@ -22,6 +24,13 @@ export default () => {
       onUpdateValue={onUpdateValue}
     />
   );
+  if (!connectedState.connected) {
+    return (
+      <View style={styles.screen}>
+        <Text style={styles.text}>Can't connect to Blabhear</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.listContainer}>
       <FlatList
@@ -70,6 +79,15 @@ const ItemRenderer = ({index, label, selected, onUpdateValue}) => (
 );
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 20,
+    color: 'white',
+  },
   listContainer: {
     flex: 1,
   },
