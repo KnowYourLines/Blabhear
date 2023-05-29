@@ -16,6 +16,7 @@ import Contacts from 'react-native-contacts';
 import Config from 'react-native-config';
 import {RoomWsContext} from '../context/RoomWsContext';
 import {RoomNameContext} from '../context/RoomNameContext';
+import {ContactsContext} from '../context/ContactsContext';
 
 export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
@@ -23,10 +24,10 @@ export default function Authenticated({navigation, route}) {
   const [editName, setEditName] = useState(false);
   const [userWs, setUserWs] = useState(null);
   const [canAccessContacts, setCanAccessContacts] = useState(false);
-  const [registeredContacts, setRegisteredContacts] = useState([]);
   const [isConnected, setIsConnected] = useState(true);
   const state = useContext(RoomWsContext);
   const roomNameState = useContext(RoomNameContext);
+  const contactsState = useContext(ContactsContext);
 
   function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);
@@ -118,7 +119,7 @@ export default function Authenticated({navigation, route}) {
         setDisplayName(data.display_name);
         setEditableDisplayName(data.display_name);
       } else if ('registered_contacts' in data) {
-        setRegisteredContacts(data.registered_contacts);
+        contactsState.setContacts(data.registered_contacts);
       }
     };
 
@@ -232,7 +233,7 @@ export default function Authenticated({navigation, route}) {
           title="New chat"
           onPress={() => {
             loadContacts(userWs);
-            navigation.navigate('Contacts', {contacts: registeredContacts});
+            navigation.navigate('Contacts');
           }}
         />
       </View>

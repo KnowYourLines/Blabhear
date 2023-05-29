@@ -1,15 +1,17 @@
-import React, {useState, useContext} from 'react';
+import React, {useContext} from 'react';
 import {View, StyleSheet, Text, FlatList, Alert} from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import Button from './Button';
 import {RoomWsContext} from '../context/RoomWsContext';
+import {ContactsContext} from '../context/ContactsContext';
 
-export default ({route}) => {
+export default () => {
   const state = useContext(RoomWsContext);
-  const [contacts, setContacts] = useState(route.params.contacts);
+  const contactsState = useContext(ContactsContext);
   onUpdateValue = (index, value) => {
+    const contacts = contactsState.contacts;
     contacts[index].selected = value;
-    return setContacts([...contacts]);
+    return contactsState.setContacts([...contacts]);
   };
   renderItem = ({item, index}) => (
     <ItemRenderer
@@ -23,7 +25,7 @@ export default ({route}) => {
   return (
     <View style={styles.listContainer}>
       <FlatList
-        data={contacts}
+        data={contactsState.contacts}
         renderItem={renderItem}
         keyExtractor={item => item.display_name || item.phone_number}
       />
@@ -31,7 +33,7 @@ export default ({route}) => {
         <Button
           title="Chat"
           onPress={() => {
-            const result = contacts
+            const result = contactsState.contacts
               .filter(contact => contact.selected === true)
               .map(contact => contact.phone_number);
             if (result.length == 0) {
