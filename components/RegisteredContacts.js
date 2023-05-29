@@ -31,9 +31,9 @@ export default ({navigation, route}) => {
         <Button
           title="Chat"
           onPress={() => {
-            const result = contacts.filter(
-              contact => contact.selected === true,
-            );
+            const result = contacts
+              .filter(contact => contact.selected === true)
+              .map(contact => contact.phone_number);
             if (result.length == 0) {
               Alert.alert('Please select a contact', '', [
                 {
@@ -45,6 +45,7 @@ export default ({navigation, route}) => {
               state.roomWs.send(
                 JSON.stringify({
                   command: 'connect',
+                  phone_numbers: result,
                 }),
               );
             }
