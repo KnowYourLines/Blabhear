@@ -8,6 +8,7 @@ import Authenticated from './components/Authenticated';
 import RegisteredContacts from './components/RegisteredContacts';
 import Room from './components/Room';
 import RoomMembers from './components/RoomMembers';
+import RoomName from './components/RoomName';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -144,6 +145,13 @@ function App() {
                 headerTitleStyle: {
                   fontWeight: 'bold',
                 },
+              }}
+            />
+            <Stack.Screen
+              name="RoomName"
+              component={RoomName}
+              options={{
+                headerShown: false,
               }}
             />
           </Stack.Navigator>

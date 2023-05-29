@@ -1,10 +1,8 @@
-import React, {useState, useContext} from 'react';
+import React, {useState} from 'react';
 import {View, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
-import {RoomWsContext} from '../context/RoomWsContext';
 import {HeaderBackButton} from '@react-navigation/elements';
 
 export default ({navigation, route}) => {
-  const state = useContext(RoomWsContext);
   const [name, setName] = useState(route.params.name);
   const [members, setMembers] = useState(route.params.members);
   React.useEffect(() => {
@@ -15,7 +13,7 @@ export default ({navigation, route}) => {
           <TouchableOpacity
             style={styles.editButton}
             onPress={() => {
-              console.log('hello world');
+              navigation.navigate('RoomName', {name: name});
             }}>
             <Image source={require('../assets/icons8-edit-24.png')} />
           </TouchableOpacity>
