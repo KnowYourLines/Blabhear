@@ -228,18 +228,21 @@ export default function Authenticated({navigation, route}) {
         onEdit={() => {
           setEditName(true);
         }}></DisplayName>
-      <NewContact canAccess={canAccessContacts}></NewContact>
-      <View style={{marginTop: 30}}>
-        <Button
-          title="New chat"
-          onPress={() => {
-            loadContacts(userWs);
-            navigation.navigate('Contacts');
-          }}
-        />
-      </View>
-      <View style={{marginTop: 30}}>
-        <Button title="Sign Out" onPress={() => auth().signOut()} />
+
+      <View style={styles.rowButtons}>
+        <View>
+          <Button title="Sign Out" onPress={() => auth().signOut()} />
+        </View>
+        <View>
+          <Button
+            title="New chat"
+            onPress={() => {
+              loadContacts(userWs);
+              navigation.navigate('Contacts');
+            }}
+          />
+        </View>
+        <NewContact canAccess={canAccessContacts}></NewContact>
       </View>
     </View>
   );
@@ -256,6 +259,12 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  rowButtons: {
+    marginTop: 30,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
