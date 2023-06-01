@@ -11,6 +11,7 @@ import {
 import auth from '@react-native-firebase/auth';
 import DisplayName from './DisplayName';
 import NewContact from './NewContact';
+import Notifications from './Notifications';
 import Button from './Button';
 import Contacts from 'react-native-contacts';
 import Config from 'react-native-config';
@@ -25,6 +26,7 @@ export default function Authenticated({navigation, route}) {
   const [editName, setEditName] = useState(false);
   const [userWs, setUserWs] = useState(null);
   const [canAccessContacts, setCanAccessContacts] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const state = useContext(RoomWsContext);
   const roomNameState = useContext(RoomNameContext);
   const contactsState = useContext(ContactsContext);
@@ -121,6 +123,8 @@ export default function Authenticated({navigation, route}) {
         setEditableDisplayName(data.display_name);
       } else if ('registered_contacts' in data) {
         contactsState.setContacts(data.registered_contacts);
+      } else if ('notifications' in data) {
+        setNotifications(data.notifications);
       }
     };
 
@@ -244,6 +248,7 @@ export default function Authenticated({navigation, route}) {
         </View>
         <NewContact canAccess={canAccessContacts}></NewContact>
       </View>
+      <Notifications notifications={notifications} />
     </View>
   );
 }

@@ -101,7 +101,13 @@ function App() {
                     }}
                     name="Home"
                     component={Authenticated}
-                    options={{headerShown: false}}
+                    options={{
+                      headerTitle: '',
+                      headerShown: true,
+                      headerStyle: {
+                        backgroundColor: 'black',
+                      },
+                    }}
                   />
                   <Stack.Screen
                     name="Contacts"
