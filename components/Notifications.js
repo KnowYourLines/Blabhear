@@ -21,7 +21,7 @@ export default ({notifications}) => {
           <Text style={styles.title} numberOfLines={1}>
             {item.room__display_name}
           </Text>
-          <Text style={styles.title} numberOfLines={1}>
+          <Text style={styles.subtitle} numberOfLines={1}>
             {item.timestamp}
           </Text>
         </TouchableOpacity>
@@ -52,6 +52,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    color: 'white',
+    width: '100%',
+  },
+  subtitle: {
+    fontSize: 15,
     color: 'white',
     width: '100%',
   },
