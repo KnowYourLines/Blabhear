@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, DeviceEventEmitter} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  DeviceEventEmitter,
+  Platform,
+} from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 import PhoneNumber from './components/PhoneNumber';
@@ -85,7 +91,14 @@ function App() {
     );
   }
 
-  if (authenticated && userId && authToken)
+  if (authenticated && userId && authToken) {
+    let homeHeaderStyle = {
+      backgroundColor: 'transparent',
+    };
+    if (Platform.OS === 'android') {
+      homeHeaderStyle['backgroundColor'] = 'black';
+    }
+
     return (
       <NavigationContainer theme={navTheme}>
         <RoomWsContextProvider>
@@ -104,9 +117,7 @@ function App() {
                     options={{
                       headerTitle: '',
                       headerShown: true,
-                      headerStyle: {
-                        backgroundColor: 'black',
-                      },
+                      headerStyle: homeHeaderStyle,
                     }}
                   />
                   <Stack.Screen
@@ -168,6 +179,7 @@ function App() {
         </RoomWsContextProvider>
       </NavigationContainer>
     );
+  }
 
   if (confirm)
     return (
