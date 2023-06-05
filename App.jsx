@@ -15,6 +15,7 @@ import RegisteredContacts from './components/RegisteredContacts';
 import Room from './components/Room';
 import RoomMembers from './components/RoomMembers';
 import RoomName from './components/RoomName';
+import Listen from './components/Listen';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -98,6 +99,17 @@ function App() {
     if (Platform.OS === 'android') {
       homeHeaderStyle['backgroundColor'] = 'black';
     }
+    let listenHeaderOptions = {
+      headerTitle: '',
+      headerShown: true,
+      headerBackVisible: false,
+      headerStyle: {
+        backgroundColor: 'transparent',
+      },
+    };
+    if (Platform.OS == 'android') {
+      listenHeaderOptions['headerStyle']['backgroundColor'] = 'black';
+    }
 
     return (
       <NavigationContainer theme={navTheme}>
@@ -171,6 +183,11 @@ function App() {
                     options={{
                       headerShown: false,
                     }}
+                  />
+                  <Stack.Screen
+                    name="Listen"
+                    component={Listen}
+                    options={listenHeaderOptions}
                   />
                 </Stack.Navigator>
               </RoomNameContextProvider>

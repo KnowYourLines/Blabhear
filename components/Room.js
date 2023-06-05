@@ -1,5 +1,14 @@
 import React, {useState, useContext} from 'react';
-import {View, StyleSheet, TouchableOpacity, Text, Image} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Image,
+  NativeModules,
+  Platform,
+} from 'react-native';
+import Button from './Button';
 import {HeaderBackButton} from '@react-navigation/elements';
 import {RoomNameContext} from '../context/RoomNameContext';
 import {ConnectedContext} from '../context/ConnectedContext';
@@ -9,6 +18,9 @@ export default ({navigation, route}) => {
   const [members, setMembers] = useState(route.params.members);
   const connectedState = useContext(ConnectedContext);
 
+  if (Platform.OS == 'ios') {
+    NativeModules.InCallManager.addListener('Proximity');
+  }
   React.useEffect(() => {
     navigation.setOptions({
       headerTitle: () => {
@@ -66,7 +78,16 @@ export default ({navigation, route}) => {
       </View>
     );
   }
-  return <View style={styles.listContainer}></View>;
+  return (
+    <View style={styles.listContainer}>
+      <Button
+        title="Listen"
+        onPress={() => {
+          navigation.navigate('Listen');
+        }}
+      />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
