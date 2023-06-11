@@ -1,5 +1,11 @@
 import React, {useState, useContext} from 'react';
-import {View, Text, DeviceEventEmitter, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  DeviceEventEmitter,
+  StyleSheet,
+  Platform,
+} from 'react-native';
 
 import Sound from 'react-native-sound';
 import Button from './Button';
@@ -11,7 +17,11 @@ export default ({navigation}) => {
   const [isNear, setIsNear] = useState(false);
   const [track, setTrack] = useState(null);
   React.useEffect(() => {
-    Sound.setCategory('Voice');
+    if (Platform.OS == 'android') {
+      Sound.setCategory('Voice');
+    } else {
+      Sound.setCategory('Playback');
+    }
     const track = new Sound(
       'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
       null,
