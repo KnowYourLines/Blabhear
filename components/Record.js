@@ -201,7 +201,7 @@ export default ({navigation}) => {
   viewBarPlayStyle = function () {
     return {
       backgroundColor: 'white',
-      height: 4,
+      height: 20,
       width: playWidth,
     };
   };
@@ -347,13 +347,8 @@ const styles = StyleSheet.create({
   },
   viewBar: {
     backgroundColor: '#ccc',
-    height: 4,
+    height: 20,
     alignSelf: 'stretch',
-  },
-  viewBarPlay: {
-    backgroundColor: 'white',
-    height: 4,
-    width: 0,
   },
   playStatusTxt: {
     marginTop: 8,
