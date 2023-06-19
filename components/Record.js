@@ -36,6 +36,7 @@ export default ({navigation}) => {
   const [audioRecorderPlayer, setAudioRecorderPlayer] = useState(
     new AudioRecorderPlayer(),
   );
+  audioRecorderPlayer.setSubscriptionDuration(0.1);
   React.useEffect(() => {
     InCallManager.start();
     if (Platform.OS == 'android') {
@@ -191,19 +192,19 @@ export default ({navigation}) => {
     audioRecorderPlayer.removePlayBackListener();
   };
   let playWidth =
-      (currentPositionSec /currentDurationSec) *
-      (Dimensions.get('screen').width - 56);
+    (currentPositionSec / currentDurationSec) *
+    (Dimensions.get('screen').width - 56);
 
-    if (!playWidth) {
-      playWidth = 0;
-    }
-    viewBarPlayStyle = function () {
-      return {
-        backgroundColor: 'white',
-        height: 4,
-        width: playWidth,
-      };
+  if (!playWidth) {
+    playWidth = 0;
+  }
+  viewBarPlayStyle = function () {
+    return {
+      backgroundColor: 'white',
+      height: 4,
+      width: playWidth,
     };
+  };
   if (!isNear) {
     return (
       <SafeAreaView style={styles.container}>
