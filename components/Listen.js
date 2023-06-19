@@ -1,22 +1,15 @@
-import React, {useState, useContext} from 'react';
-import {
-  View,
-  Text,
-  DeviceEventEmitter,
-  StyleSheet,
-  Platform,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, DeviceEventEmitter, Platform} from 'react-native';
 
 import Sound from 'react-native-sound';
 import Button from './Button';
-import {ConnectedContext} from '../context/ConnectedContext';
 import InCallManager from 'react-native-incall-manager';
 
 export default ({navigation}) => {
-  const connectedState = useContext(ConnectedContext);
   const [isNear, setIsNear] = useState(false);
   const [track, setTrack] = useState(null);
   React.useEffect(() => {
+    InCallManager.start();
     if (Platform.OS == 'android') {
       Sound.setCategory('Voice');
     } else {
@@ -40,16 +33,6 @@ export default ({navigation}) => {
   DeviceEventEmitter.addListener('Proximity', function (data) {
     setIsNear(data['isNear']);
   });
-  React.useEffect(() => {
-    InCallManager.start();
-  }, []);
-  if (!connectedState.connected) {
-    return (
-      <View style={styles.screen}>
-        <Text style={styles.screenText}>Can't connect to Blabhear</Text>
-      </View>
-    );
-  }
   if (!isNear) {
     return (
       <View style={{marginTop: '25%'}}>
@@ -68,15 +51,3 @@ export default ({navigation}) => {
     return <View></View>;
   }
 };
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  screenText: {
-    fontSize: 20,
-    color: 'white',
-  },
-});

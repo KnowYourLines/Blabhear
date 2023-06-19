@@ -86,6 +86,17 @@ export default ({navigation, route}) => {
           navigation.navigate('Listen');
         }}
       />
+      <View
+        style={{
+          height: '10%',
+        }}
+      />
+      <Button
+        title="Record"
+        onPress={() => {
+          navigation.navigate('Record');
+        }}
+      />
     </View>
   );
 };

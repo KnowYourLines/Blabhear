@@ -16,6 +16,7 @@ import Room from './components/Room';
 import RoomMembers from './components/RoomMembers';
 import RoomName from './components/RoomName';
 import Listen from './components/Listen';
+import Record from './components/Record';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -187,6 +188,11 @@ function App() {
                   <Stack.Screen
                     name="Listen"
                     component={Listen}
+                    options={listenHeaderOptions}
+                  />
+                  <Stack.Screen
+                    name="Record"
+                    component={Record}
                     options={listenHeaderOptions}
                   />
                 </Stack.Navigator>
