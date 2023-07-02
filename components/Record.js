@@ -120,6 +120,9 @@ export default ({navigation}) => {
     };
 
     console.log('audioSet', audioSet);
+    if (isPlaying) {
+      await onStopPlay();
+    }
 
     const uri = await audioRecorderPlayer.startRecorder(
       Platform.select({
@@ -182,6 +185,7 @@ export default ({navigation}) => {
   };
   onStopPlay = async () => {
     console.log('onStopPlay');
+    setIsPlaying(false);
     audioRecorderPlayer.stopPlayer();
     audioRecorderPlayer.removePlayBackListener();
   };
