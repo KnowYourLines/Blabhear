@@ -27,6 +27,8 @@ import AudioRecorderPlayer, {
 
 export default ({navigation}) => {
   const [isNear, setIsNear] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [recordSecs, setRecordSecs] = useState(0);
   const [recordTime, setRecordTime] = useState('00:00:00');
   const [currentPositionSec, setCurrentPositionSec] = useState(0);
@@ -107,6 +109,7 @@ export default ({navigation}) => {
     }
   };
   onStartRecord = async () => {
+    setIsRecording(true);
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
       AudioSourceAndroid: AudioSourceAndroidType.MIC,
@@ -133,47 +136,49 @@ export default ({navigation}) => {
     console.log(`uri: ${uri}`);
   };
   onStopRecord = async () => {
+    setIsRecording(false);
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     setRecordSecs(0);
     console.log(result);
   };
-  onStartPlay = async () => {
-    console.log(
-      'onStartPlay',
-      Platform.select({
-        ios: undefined,
-        android: undefined,
-      }),
-    );
+  onStartPlay = async e => {
+    setIsPlaying(true);
 
     try {
-      const msg = await audioRecorderPlayer.startPlayer(
-        Platform.select({
-          ios: undefined,
-          android: undefined,
-        }),
-      );
+      if (e.currentPosition > 0) {
+        await audioRecorderPlayer.resumePlayer();
+      } else {
+        const msg = await audioRecorderPlayer.startPlayer(
+          Platform.select({
+            ios: undefined,
+            android: undefined,
+          }),
+        );
 
-      const volume = await audioRecorderPlayer.setVolume(1.0);
-      console.log(`path: ${msg}`, `volume: ${volume}`);
+        const volume = await audioRecorderPlayer.setVolume(1.0);
+        console.log(`path: ${msg}`, `volume: ${volume}`);
 
-      audioRecorderPlayer.addPlayBackListener(e => {
-        console.log('playBackListener', e);
-        setCurrentPositionSec(e.currentPosition);
-        setCurrentDurationSec(e.duration);
-        setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-        setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
-      });
+        audioRecorderPlayer.addPlayBackListener(e => {
+          console.log('playBackListener', e);
+          setCurrentPositionSec(e.currentPosition);
+          setCurrentDurationSec(e.duration);
+          setPlayTime(
+            audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
+          );
+          setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
+          if (Math.floor(e.currentPosition) == Math.floor(e.duration)) {
+            setIsPlaying(false);
+          }
+        });
+      }
     } catch (err) {
       console.log('startPlayer error', err);
     }
   };
   onPausePlay = async () => {
+    setIsPlaying(false);
     await audioRecorderPlayer.pausePlayer();
-  };
-  onResumePlay = async () => {
-    await audioRecorderPlayer.resumePlayer();
   };
   onStopPlay = async () => {
     console.log('onStopPlay');
@@ -195,88 +200,76 @@ export default ({navigation}) => {
     };
   };
   if (!isNear) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <Button
-          title="Back"
-          onPress={() => {
-            InCallManager.stop();
-            navigation.goBack();
-          }}
-        />
-        <Text style={styles.titleTxt}>Audio Recorder Player</Text>
-        <Text style={styles.txtRecordCounter}>{recordTime}</Text>
-        <View style={styles.viewRecorder}>
-          <View style={styles.recordBtnWrapper}>
-            <RecordButton
-              style={styles.btn}
-              onPress={onStartRecord}
-              textStyle={styles.txt}>
-              Record
-            </RecordButton>
-            <RecordButton
-              style={[styles.btn, {marginLeft: 12}]}
-              onPress={onStopRecord}
-              textStyle={styles.txt}>
-              Stop
-            </RecordButton>
-          </View>
-        </View>
-        <View style={styles.viewPlayer}>
-          <TouchableOpacity
-            style={styles.viewBarWrapper}
-            onPress={onStatusPress}>
-            <View style={styles.viewBar}>
-              <View style={viewBarPlayStyle()} />
+    if (isRecording) {
+      return (
+        <SafeAreaView style={styles.container}>
+          <Button
+            title="Back"
+            onPress={async () => {
+              await onStopRecord();
+              InCallManager.stop();
+              navigation.goBack();
+            }}
+          />
+          <Text style={styles.titleTxt}>Audio</Text>
+          <Text style={styles.txtRecordCounter}>{recordTime}</Text>
+          <View style={styles.viewRecorder}>
+            <View style={styles.recordBtnWrapper}>
+              <RecordButton
+                style={[styles.btn, {marginLeft: 12}]}
+                onPress={onStopRecord}
+                textStyle={styles.txt}>
+                Stop
+              </RecordButton>
             </View>
-          </TouchableOpacity>
-          <Text style={styles.txtCounter}>
-            {playTime} / {duration}
-          </Text>
-          <View style={styles.playBtnWrapper}>
-            <RecordButton
-              style={styles.btn}
-              onPress={onStartPlay}
-              textStyle={styles.txt}>
-              Play
-            </RecordButton>
-            <RecordButton
-              style={[
-                styles.btn,
-                {
-                  marginLeft: 12,
-                },
-              ]}
-              onPress={onPausePlay}
-              textStyle={styles.txt}>
-              Pause
-            </RecordButton>
-            <RecordButton
-              style={[
-                styles.btn,
-                {
-                  marginLeft: 12,
-                },
-              ]}
-              onPress={onResumePlay}
-              textStyle={styles.txt}>
-              Resume
-            </RecordButton>
-            <RecordButton
-              style={[
-                styles.btn,
-                {
-                  marginLeft: 12,
-                },
-              ]}
-              onPress={onStopPlay}
-              textStyle={styles.txt}>
-              Stop
-            </RecordButton>
           </View>
-        </View>
-      </SafeAreaView>
-    );
+        </SafeAreaView>
+      );
+    } else {
+      return (
+        <SafeAreaView style={styles.container}>
+          <Button
+            title="Back"
+            onPress={async () => {
+              await onStopPlay();
+              InCallManager.stop();
+              navigation.goBack();
+            }}
+          />
+          <Text style={styles.titleTxt}>Audio</Text>
+          <View style={styles.viewRecorder}>
+            <View style={styles.recordBtnWrapper}>
+              <RecordButton
+                style={styles.btn}
+                onPress={onStartRecord}
+                textStyle={styles.txt}>
+                New Recording
+              </RecordButton>
+            </View>
+          </View>
+          <View style={styles.viewPlayer}>
+            <TouchableOpacity
+              style={styles.viewBarWrapper}
+              onPress={onStatusPress}>
+              <View style={styles.viewBar}>
+                <View style={viewBarPlayStyle()} />
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.txtCounter}>
+              {playTime} / {duration}
+            </Text>
+            <View style={styles.playBtnWrapper}>
+              <RecordButton
+                style={styles.btn}
+                onPress={isPlaying ? onPausePlay : onStartPlay}
+                textStyle={styles.txt}>
+                {isPlaying ? 'Pause' : 'Play'}
+              </RecordButton>
+            </View>
+          </View>
+        </SafeAreaView>
+      );
+    }
   } else {
     return <View></View>;
   }
