@@ -132,17 +132,6 @@ export default ({navigation}) => {
     });
     console.log(`uri: ${uri}`);
   };
-  onPauseRecord = async () => {
-    try {
-      const r = await audioRecorderPlayer.pauseRecorder();
-      console.log(r);
-    } catch (err) {
-      console.log('pauseRecord', err);
-    }
-  };
-  onResumeRecord = async () => {
-    await audioRecorderPlayer.resumeRecorder();
-  };
   onStopRecord = async () => {
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
@@ -224,28 +213,6 @@ export default ({navigation}) => {
               onPress={onStartRecord}
               textStyle={styles.txt}>
               Record
-            </RecordButton>
-            <RecordButton
-              style={[
-                styles.btn,
-                {
-                  marginLeft: 12,
-                },
-              ]}
-              onPress={onPauseRecord}
-              textStyle={styles.txt}>
-              Pause
-            </RecordButton>
-            <RecordButton
-              style={[
-                styles.btn,
-                {
-                  marginLeft: 12,
-                },
-              ]}
-              onPress={onResumeRecord}
-              textStyle={styles.txt}>
-              Resume
             </RecordButton>
             <RecordButton
               style={[styles.btn, {marginLeft: 12}]}
