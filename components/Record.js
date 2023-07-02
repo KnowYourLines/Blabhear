@@ -29,7 +29,6 @@ export default ({navigation}) => {
   const [isNear, setIsNear] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [recordSecs, setRecordSecs] = useState(0);
   const [recordTime, setRecordTime] = useState('00:00:00');
   const [currentPositionSec, setCurrentPositionSec] = useState(0);
   const [currentDurationSec, setCurrentDurationSec] = useState(0);
@@ -134,7 +133,9 @@ export default ({navigation}) => {
 
     audioRecorderPlayer.addRecordBackListener(e => {
       setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-      setRecordSecs(e.currentPosition);
+      console.log(e);
+      setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+      setDuration(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
     });
     console.log(`uri: ${uri}`);
   };
@@ -142,7 +143,6 @@ export default ({navigation}) => {
     setIsRecording(false);
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
-    setRecordSecs(0);
     console.log(result);
   };
   onStartPlay = async e => {
