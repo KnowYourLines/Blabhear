@@ -25,6 +25,8 @@ import AudioRecorderPlayer, {
   OutputFormatAndroidType,
 } from 'react-native-audio-recorder-player';
 
+import RNFS from 'react-native-fs';
+
 export default ({navigation}) => {
   const [isNear, setIsNear] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -34,6 +36,7 @@ export default ({navigation}) => {
   const [currentDurationSec, setCurrentDurationSec] = useState(0);
   const [playTime, setPlayTime] = useState('00:00:00');
   const [duration, setDuration] = useState('00:00:00');
+  const [uri, setUri] = useState('');
   const [audioRecorderPlayer, setAudioRecorderPlayer] = useState(
     new AudioRecorderPlayer(),
   );
@@ -138,6 +141,7 @@ export default ({navigation}) => {
       setDuration(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
     });
     console.log(`uri: ${uri}`);
+    setUri(uri);
   };
   onStopRecord = async () => {
     setIsRecording(false);
@@ -210,6 +214,21 @@ export default ({navigation}) => {
           <Button
             title="Back"
             onPress={async () => {
+              RNFS.exists(uri)
+                .then(result => {
+                  if (result) {
+                    return RNFS.unlink(uri)
+                      .then(() => {
+                        console.log('FILE DELETED');
+                      })
+                      .catch(err => {
+                        console.log(err.message);
+                      });
+                  }
+                })
+                .catch(err => {
+                  console.log(err.message);
+                });
               await onStopRecord();
               InCallManager.stop();
               navigation.goBack();
@@ -235,6 +254,23 @@ export default ({navigation}) => {
           <Button
             title="Back"
             onPress={async () => {
+              RNFS.exists(uri)
+                .then(result => {
+                  console.log('file found');
+                  console.log(result);
+                  if (result) {
+                    return RNFS.unlink(uri)
+                      .then(() => {
+                        console.log('FILE DELETED');
+                      })
+                      .catch(err => {
+                        console.log(err.message);
+                      });
+                  }
+                })
+                .catch(err => {
+                  console.log(err.message);
+                });
               await onStopPlay();
               InCallManager.stop();
               navigation.goBack();
