@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   DeviceEventEmitter,
@@ -41,6 +41,79 @@ export default ({navigation}) => {
     new AudioRecorderPlayer(),
   );
   audioRecorderPlayer.setSubscriptionDuration(0.1);
+  const onStartPlay = async e => {
+    setIsPlaying(true);
+
+    try {
+      if (e.currentPosition > 0) {
+        await audioRecorderPlayer.resumePlayer();
+      } else {
+        const msg = await audioRecorderPlayer.startPlayer(
+          Platform.select({
+            ios: undefined,
+            android: undefined,
+          }),
+        );
+
+        const volume = await audioRecorderPlayer.setVolume(1.0);
+        console.log(`path: ${msg}`, `volume: ${volume}`);
+
+        audioRecorderPlayer.addPlayBackListener(e => {
+          console.log('playBackListener', e);
+          setCurrentPositionSec(e.currentPosition);
+          setCurrentDurationSec(e.duration);
+          setPlayTime(
+            audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
+          );
+          setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
+          if (Math.floor(e.currentPosition) == Math.floor(e.duration)) {
+            setIsPlaying(false);
+          }
+        });
+      }
+    } catch (err) {
+      console.log('startPlayer error', err);
+    }
+  };
+  const onStopPlay = async () => {
+    console.log('onStopPlay');
+    setIsPlaying(false);
+    audioRecorderPlayer.stopPlayer();
+    audioRecorderPlayer.removePlayBackListener();
+  };
+  const onStartRecord = useCallback(async () => {
+    setIsRecording(true);
+    const audioSet = {
+      AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+      AudioSourceAndroid: AudioSourceAndroidType.MIC,
+      AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+      AVNumberOfChannelsKeyIOS: 2,
+      AVFormatIDKeyIOS: AVEncodingOption.aac,
+      OutputFormatAndroid: OutputFormatAndroidType.AAC_ADTS,
+    };
+
+    console.log('audioSet', audioSet);
+    if (isPlaying) {
+      await onStopPlay();
+    }
+
+    const uri = await audioRecorderPlayer.startRecorder(
+      Platform.select({
+        ios: undefined,
+        android: undefined,
+      }),
+      audioSet,
+    );
+
+    audioRecorderPlayer.addRecordBackListener(e => {
+      setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+      console.log(e);
+      setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+      setDuration(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+    });
+    console.log(`uri: ${uri}`);
+    setUri(uri);
+  }, []);
   React.useEffect(() => {
     InCallManager.start();
     if (Platform.OS == 'android') {
@@ -84,7 +157,12 @@ export default ({navigation}) => {
     } else {
       Sound.setCategory('Playback');
     }
-  }, []);
+    const startRecord = async () => {
+      await onStartRecord();
+    };
+
+    startRecord(); // run it, run it
+  }, [onStartRecord]);
 
   DeviceEventEmitter.addListener('Proximity', function (data) {
     setIsNear(data['isNear']);
@@ -110,88 +188,15 @@ export default ({navigation}) => {
       console.log(`subSecs: ${subSecs}`);
     }
   };
-  onStartRecord = async () => {
-    setIsRecording(true);
-    const audioSet = {
-      AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-      AudioSourceAndroid: AudioSourceAndroidType.MIC,
-      AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
-      AVNumberOfChannelsKeyIOS: 2,
-      AVFormatIDKeyIOS: AVEncodingOption.aac,
-      OutputFormatAndroid: OutputFormatAndroidType.AAC_ADTS,
-    };
-
-    console.log('audioSet', audioSet);
-    if (isPlaying) {
-      await onStopPlay();
-    }
-
-    const uri = await audioRecorderPlayer.startRecorder(
-      Platform.select({
-        ios: undefined,
-        android: undefined,
-      }),
-      audioSet,
-    );
-
-    audioRecorderPlayer.addRecordBackListener(e => {
-      setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-      console.log(e);
-      setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-      setDuration(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-    });
-    console.log(`uri: ${uri}`);
-    setUri(uri);
-  };
   onStopRecord = async () => {
     setIsRecording(false);
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
     console.log(result);
   };
-  onStartPlay = async e => {
-    setIsPlaying(true);
-
-    try {
-      if (e.currentPosition > 0) {
-        await audioRecorderPlayer.resumePlayer();
-      } else {
-        const msg = await audioRecorderPlayer.startPlayer(
-          Platform.select({
-            ios: undefined,
-            android: undefined,
-          }),
-        );
-
-        const volume = await audioRecorderPlayer.setVolume(1.0);
-        console.log(`path: ${msg}`, `volume: ${volume}`);
-
-        audioRecorderPlayer.addPlayBackListener(e => {
-          console.log('playBackListener', e);
-          setCurrentPositionSec(e.currentPosition);
-          setCurrentDurationSec(e.duration);
-          setPlayTime(
-            audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
-          );
-          setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
-          if (Math.floor(e.currentPosition) == Math.floor(e.duration)) {
-            setIsPlaying(false);
-          }
-        });
-      }
-    } catch (err) {
-      console.log('startPlayer error', err);
-    }
-  };
   onPausePlay = async () => {
     setIsPlaying(false);
     await audioRecorderPlayer.pausePlayer();
-  };
-  onStopPlay = async () => {
-    console.log('onStopPlay');
-    setIsPlaying(false);
-    audioRecorderPlayer.stopPlayer();
-    audioRecorderPlayer.removePlayBackListener();
   };
   let playWidth =
     (currentPositionSec / currentDurationSec) *
@@ -234,7 +239,7 @@ export default ({navigation}) => {
               navigation.goBack();
             }}
           />
-          <Text style={styles.titleTxt}>Audio</Text>
+          <Text style={styles.titleTxt}>Recording</Text>
           <Text style={styles.txtRecordCounter}>{recordTime}</Text>
           <View style={styles.viewRecorder}>
             <View style={styles.recordBtnWrapper}>
@@ -277,17 +282,7 @@ export default ({navigation}) => {
                 navigation.goBack();
               }}
             />
-            <Text style={styles.titleTxt}>Audio</Text>
-            <View style={styles.viewRecorder}>
-              <View style={styles.recordBtnWrapper}>
-                <RecordButton
-                  style={styles.btn}
-                  onPress={onStartRecord}
-                  textStyle={styles.txt}>
-                  New Recording
-                </RecordButton>
-              </View>
-            </View>
+            <Text style={styles.titleTxt}>Playback</Text>
             <View style={styles.viewPlayer}>
               <TouchableOpacity
                 style={styles.viewBarWrapper}
@@ -306,6 +301,16 @@ export default ({navigation}) => {
                   textStyle={styles.txt}>
                   {isPlaying ? 'Pause' : 'Play'}
                 </RecordButton>
+              </View>
+              <View style={styles.viewRecorder}>
+                <View style={styles.recordBtnWrapper}>
+                  <RecordButton
+                    style={styles.btn}
+                    onPress={onStartRecord}
+                    textStyle={styles.txt}>
+                    New Recording
+                  </RecordButton>
+                </View>
               </View>
             </View>
           </SafeAreaView>
@@ -384,7 +389,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewBarWrapper: {
-    marginTop: 28,
     marginHorizontal: 28,
     alignSelf: 'stretch',
   },
