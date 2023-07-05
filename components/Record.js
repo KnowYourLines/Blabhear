@@ -74,10 +74,7 @@ export default ({navigation}) => {
     };
 
     console.log('audioSet', audioSet);
-    if (isPlaying) {
-      await onStopPlay();
-    }
-    
+
     const uri = await audioRecorderPlayer.startRecorder(
       Platform.select({
         ios: undefined,
@@ -299,7 +296,14 @@ export default ({navigation}) => {
                   title={isPlaying ? 'Pause' : 'Play'}></Button>
               </View>
               <View style={styles.recordBtnWrapper}>
-                <Button onPress={onStartRecord} title="New Recording"></Button>
+                <Button
+                  onPress={() => {
+                    if (isPlaying) {
+                      onStopPlay();
+                    }
+                    onStartRecord();
+                  }}
+                  title="New Recording"></Button>
               </View>
             </View>
           </View>
