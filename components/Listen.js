@@ -22,7 +22,13 @@ export default ({navigation}) => {
   const [isPlaying, setIsPlaying] = useState(true);
   const onStartPlay = async e => {
     setIsPlaying(true);
-    track.play();
+    track.play(completed => {
+      if (completed) {
+        setIsPlaying(false);
+      } else {
+        console.log('playback failed due to audio decoding errors');
+      }
+    });
   };
   onPausePlay = async () => {
     setIsPlaying(false);
@@ -35,24 +41,24 @@ export default ({navigation}) => {
     } else {
       Sound.setCategory('Playback');
     }
-    const track = new Sound(
+    const recording = new Sound(
       'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
       null,
       e => {
         if (e) {
           console.log('error loading track:', e);
         } else {
-          track.setVolume(1);
-          track.play();
-          setTrack(track);
-          setDuration(track.getDuration());
+          recording.setVolume(1);
+          recording.play();
+          setTrack(recording);
+          setDuration(recording.getDuration());
         }
       },
     );
     setTimeout(
       setInterval(() => {
-        if (track && track.isLoaded() && isPlaying && !sliderEditing) {
-          track.getCurrentTime((seconds, trackIsPlaying) => {
+        if (recording && recording.isLoaded() && isPlaying && !sliderEditing) {
+          recording.getCurrentTime((seconds, recordingIsPlaying) => {
             setPlaySeconds(seconds);
           });
         }
@@ -106,7 +112,7 @@ export default ({navigation}) => {
         />
         <View
           style={{
-            marginTop: "25%",
+            marginTop: '25%',
             marginVertical: 15,
             marginHorizontal: 15,
             flexDirection: 'row',
