@@ -7,10 +7,9 @@ import {
   Linking,
   Alert,
   StyleSheet,
-  Dimensions,
   Text,
-  TouchableOpacity,
 } from 'react-native';
+import Slider from '@react-native-community/slider';
 
 import Sound from 'react-native-sound';
 import Button from './Button';
@@ -30,10 +29,11 @@ export default ({navigation}) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [recordTime, setRecordTime] = useState('00:00:00');
-  const [currentPositionSec, setCurrentPositionSec] = useState(0);
-  const [currentDurationSec, setCurrentDurationSec] = useState(0);
-  const [playTime, setPlayTime] = useState('00:00:00');
-  const [duration, setDuration] = useState('00:00:00');
+  const [track, setTrack] = useState(null);
+  const [playSeconds, setPlaySeconds] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [sliderEditing, setSliderEditing] = useState(false);
+  const [timeout, setTimeout] = useState(null);
   const [uri, setUri] = useState('');
   const [audioRecorderPlayer, setAudioRecorderPlayer] = useState(
     new AudioRecorderPlayer(),
@@ -41,43 +41,21 @@ export default ({navigation}) => {
   audioRecorderPlayer.setSubscriptionDuration(0.1);
   const onStartPlay = async e => {
     setIsPlaying(true);
-
-    try {
-      if (e.currentPosition > 0) {
-        await audioRecorderPlayer.resumePlayer();
+    track.play(completed => {
+      if (completed) {
+        setIsPlaying(false);
       } else {
-        const msg = await audioRecorderPlayer.startPlayer(
-          Platform.select({
-            ios: undefined,
-            android: undefined,
-          }),
-        );
-
-        const volume = await audioRecorderPlayer.setVolume(1.0);
-        console.log(`path: ${msg}`, `volume: ${volume}`);
-
-        audioRecorderPlayer.addPlayBackListener(e => {
-          console.log('playBackListener', e);
-          setCurrentPositionSec(e.currentPosition);
-          setCurrentDurationSec(e.duration);
-          setPlayTime(
-            audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
-          );
-          setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
-          if (Math.floor(e.currentPosition) == Math.floor(e.duration)) {
-            setIsPlaying(false);
-          }
-        });
+        console.log('playback failed due to audio decoding errors');
       }
-    } catch (err) {
-      console.log('startPlayer error', err);
-    }
+    });
   };
   const onStopPlay = async () => {
-    console.log('onStopPlay');
     setIsPlaying(false);
-    audioRecorderPlayer.stopPlayer();
-    audioRecorderPlayer.removePlayBackListener();
+    track.pause();
+    track.release();
+    if (timeout) {
+      clearInterval(timeout);
+    }
   };
   const onStartRecord = useCallback(async () => {
     setIsRecording(true);
@@ -105,9 +83,6 @@ export default ({navigation}) => {
 
     audioRecorderPlayer.addRecordBackListener(e => {
       setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-      console.log(e);
-      setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-      setDuration(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
     });
     console.log(`uri: ${uri}`);
     setUri(uri);
@@ -165,51 +140,60 @@ export default ({navigation}) => {
   DeviceEventEmitter.addListener('Proximity', function (data) {
     setIsNear(data['isNear']);
   });
-  onStatusPress = e => {
-    const touchX = e.nativeEvent.locationX;
-    console.log(`touchX: ${touchX}`);
-
-    const playWidth =
-      (currentPositionSec / currentDurationSec) *
-      (Dimensions.get('screen').width - 56);
-    console.log(`currentPlayWidth: ${playWidth}`);
-
-    const currentPosition = Math.round(currentPositionSec);
-
-    if (playWidth && playWidth < touchX) {
-      const addSecs = Math.round(currentPosition + 1000);
-      audioRecorderPlayer.seekToPlayer(addSecs);
-      console.log(`addSecs: ${addSecs}`);
-    } else {
-      const subSecs = Math.round(currentPosition - 1000);
-      audioRecorderPlayer.seekToPlayer(subSecs);
-      console.log(`subSecs: ${subSecs}`);
-    }
-  };
-  onStopRecord = async () => {
+  const onStopRecord = async () => {
     setIsRecording(false);
     const result = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
-    console.log(result);
+    const recording = new Sound(result, null, e => {
+      if (e) {
+        console.log('error loading track:', e);
+      } else {
+        recording.setVolume(1);
+        setTrack(recording);
+        setDuration(recording.getDuration());
+      }
+    });
+    setTimeout(
+      setInterval(() => {
+        recording.getCurrentTime((seconds, recordingIsPlaying) => {
+          if (recordingIsPlaying && !sliderEditing) {
+            setPlaySeconds(seconds);
+          }
+        });
+      }, 100),
+    );
   };
-  onPausePlay = async () => {
+  const onPausePlay = async () => {
     setIsPlaying(false);
-    await audioRecorderPlayer.pausePlayer();
+    track.pause();
   };
-  let playWidth =
-    (currentPositionSec / currentDurationSec) *
-    (Dimensions.get('screen').width - 56);
+  const onSliderEditStart = () => {
+    setSliderEditing(true);
+  };
+  const onSliderEditEnd = () => {
+    setSliderEditing(false);
+  };
+  const onSliderEditing = value => {
+    if (track) {
+      track.setCurrentTime(value);
+      setPlaySeconds(value);
+    }
+  };
+  const getAudioTimeString = seconds => {
+    const h = parseInt(seconds / (60 * 60));
+    const m = parseInt((seconds % (60 * 60)) / 60);
+    const s = parseInt(seconds % 60);
 
-  if (!playWidth) {
-    playWidth = 0;
-  }
-  viewBarPlayStyle = function () {
-    return {
-      backgroundColor: 'white',
-      height: 20,
-      width: playWidth,
-    };
+    return (
+      (h < 10 ? '0' + h : h) +
+      ':' +
+      (m < 10 ? '0' + m : m) +
+      ':' +
+      (s < 10 ? '0' + s : s)
+    );
   };
+  const currentTimeString = getAudioTimeString(playSeconds);
+  const durationString = getAudioTimeString(duration);
   if (!isNear) {
     if (isRecording) {
       return (
@@ -276,22 +260,41 @@ export default ({navigation}) => {
           />
           <Text style={styles.titleTxt}>Playback</Text>
           <View style={styles.viewPlayer}>
-            <TouchableOpacity
-              style={styles.viewBarWrapper}
-              onPress={onStatusPress}>
-              <View style={styles.viewBar}>
-                <View style={viewBarPlayStyle()} />
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.txtCounter}>
-              {playTime} / {duration}
-            </Text>
-            <View style={styles.playBtnWrapper}>
-              <Button
-                onPress={isPlaying ? onPausePlay : onStartPlay}
-                title={isPlaying ? 'Pause' : 'Play'}></Button>
-            </View>
             <View style={styles.viewRecorder}>
+              <View
+                style={{
+                  marginTop: '25%',
+                  marginVertical: 15,
+                  marginHorizontal: 15,
+                  flexDirection: 'row',
+                }}>
+                <Text style={{color: 'white', alignSelf: 'center'}}>
+                  {currentTimeString}
+                </Text>
+                <Slider
+                  onTouchStart={onSliderEditStart}
+                  onTouchEnd={onSliderEditEnd}
+                  onValueChange={onSliderEditing}
+                  value={playSeconds}
+                  maximumValue={duration}
+                  maximumTrackTintColor="gray"
+                  minimumTrackTintColor="white"
+                  thumbTintColor="white"
+                  style={{
+                    flex: 1,
+                    alignSelf: 'center',
+                    marginHorizontal: Platform.select({ios: 5}),
+                  }}
+                />
+                <Text style={{color: 'white', alignSelf: 'center'}}>
+                  {durationString}
+                </Text>
+              </View>
+              <View style={styles.playBtnWrapper}>
+                <Button
+                  onPress={isPlaying ? onPausePlay : onStartPlay}
+                  title={isPlaying ? 'Pause' : 'Play'}></Button>
+              </View>
               <View style={styles.recordBtnWrapper}>
                 <Button onPress={onStartRecord} title="New Recording"></Button>
               </View>
