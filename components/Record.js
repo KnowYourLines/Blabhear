@@ -260,51 +260,47 @@ export default ({navigation}) => {
           />
           <Text style={styles.titleTxt}>Playback</Text>
           <View style={styles.viewPlayer}>
-            <View style={styles.viewRecorder}>
-              <View
+            <View
+              style={{
+                marginHorizontal: 15,
+                flexDirection: 'row',
+              }}>
+              <Text style={{color: 'white', alignSelf: 'center'}}>
+                {currentTimeString}
+              </Text>
+              <Slider
+                onTouchStart={onSliderEditStart}
+                onTouchEnd={onSliderEditEnd}
+                onValueChange={onSliderEditing}
+                value={playSeconds}
+                maximumValue={duration}
+                maximumTrackTintColor="gray"
+                minimumTrackTintColor="white"
+                thumbTintColor="white"
                 style={{
-                  marginTop: '25%',
-                  marginVertical: 15,
-                  marginHorizontal: 15,
-                  flexDirection: 'row',
-                }}>
-                <Text style={{color: 'white', alignSelf: 'center'}}>
-                  {currentTimeString}
-                </Text>
-                <Slider
-                  onTouchStart={onSliderEditStart}
-                  onTouchEnd={onSliderEditEnd}
-                  onValueChange={onSliderEditing}
-                  value={playSeconds}
-                  maximumValue={duration}
-                  maximumTrackTintColor="gray"
-                  minimumTrackTintColor="white"
-                  thumbTintColor="white"
-                  style={{
-                    flex: 1,
-                    alignSelf: 'center',
-                    marginHorizontal: Platform.select({ios: 5}),
-                  }}
-                />
-                <Text style={{color: 'white', alignSelf: 'center'}}>
-                  {durationString}
-                </Text>
-              </View>
-              <View style={styles.playBtnWrapper}>
-                <Button
-                  onPress={isPlaying ? onPausePlay : onStartPlay}
-                  title={isPlaying ? 'Pause' : 'Play'}></Button>
-              </View>
-              <View style={styles.recordBtnWrapper}>
-                <Button
-                  onPress={() => {
-                    if (isPlaying) {
-                      onStopPlay();
-                    }
-                    onStartRecord();
-                  }}
-                  title="New Recording"></Button>
-              </View>
+                  flex: 1,
+                  alignSelf: 'center',
+                  marginHorizontal: Platform.select({ios: 5}),
+                }}
+              />
+              <Text style={{color: 'white', alignSelf: 'center'}}>
+                {durationString}
+              </Text>
+            </View>
+            <View style={styles.playBtnWrapper}>
+              <Button
+                onPress={isPlaying ? onPausePlay : onStartPlay}
+                title={isPlaying ? 'Pause' : 'Play'}></Button>
+            </View>
+            <View style={styles.recordBtnWrapper}>
+              <Button
+                onPress={() => {
+                  if (isPlaying) {
+                    onStopPlay();
+                  }
+                  onStartRecord();
+                }}
+                title="New Recording"></Button>
             </View>
           </View>
         </View>
@@ -328,16 +324,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   recordBtnWrapper: {
+    marginTop: 40,
     flexDirection: 'row',
   },
   viewPlayer: {
-    marginTop: 60,
+    marginTop: 40,
     alignSelf: 'stretch',
     alignItems: 'center',
   },
   playBtnWrapper: {
     flexDirection: 'row',
-    marginTop: 40,
+    marginTop: 60,
   },
   txtRecordCounter: {
     marginTop: 32,
