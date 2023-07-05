@@ -57,11 +57,11 @@ export default ({navigation}) => {
     );
     setTimeout(
       setInterval(() => {
-        if (recording && recording.isLoaded() && isPlaying && !sliderEditing) {
-          recording.getCurrentTime((seconds, recordingIsPlaying) => {
+        recording.getCurrentTime((seconds, recordingIsPlaying) => {
+          if (recordingIsPlaying && !sliderEditing) {
             setPlaySeconds(seconds);
-          });
-        }
+          }
+        });
       }, 100),
     );
   }, []);
