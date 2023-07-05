@@ -40,6 +40,11 @@ export default ({navigation}) => {
   );
   audioRecorderPlayer.setSubscriptionDuration(0.1);
   const onStartPlay = async e => {
+    if (Platform.OS == 'android') {
+      Sound.setCategory('Voice');
+    } else {
+      Sound.setCategory('Playback');
+    }
     setIsPlaying(true);
     track.play(completed => {
       if (completed) {
@@ -72,7 +77,7 @@ export default ({navigation}) => {
     if (isPlaying) {
       await onStopPlay();
     }
-
+    
     const uri = await audioRecorderPlayer.startRecorder(
       Platform.select({
         ios: undefined,
@@ -90,7 +95,6 @@ export default ({navigation}) => {
   React.useEffect(() => {
     InCallManager.start();
     if (Platform.OS == 'android') {
-      Sound.setCategory('Voice');
       const requestPermissions = async () => {
         try {
           const grants = await PermissionsAndroid.requestMultiple([
@@ -127,8 +131,6 @@ export default ({navigation}) => {
         }
       };
       requestPermissions();
-    } else {
-      Sound.setCategory('Playback');
     }
     const startRecord = async () => {
       await onStartRecord();
