@@ -8,14 +8,12 @@ import {
   Alert,
   StyleSheet,
   Dimensions,
-  SafeAreaView,
   Text,
   TouchableOpacity,
 } from 'react-native';
 
 import Sound from 'react-native-sound';
 import Button from './Button';
-import RecordButton from './RecordButton';
 import InCallManager from 'react-native-incall-manager';
 import AudioRecorderPlayer, {
   AVEncoderAudioQualityIOSType,
@@ -215,7 +213,7 @@ export default ({navigation}) => {
   if (!isNear) {
     if (isRecording) {
       return (
-        <SafeAreaView style={styles.container}>
+        <View>
           <Button
             title="Back"
             onPress={async () => {
@@ -243,19 +241,14 @@ export default ({navigation}) => {
           <Text style={styles.txtRecordCounter}>{recordTime}</Text>
           <View style={styles.viewRecorder}>
             <View style={styles.recordBtnWrapper}>
-              <RecordButton
-                style={[styles.btn, {marginLeft: 12}]}
-                onPress={onStopRecord}
-                textStyle={styles.txt}>
-                Stop
-              </RecordButton>
+              <Button onPress={onStopRecord} title="Stop"></Button>
             </View>
           </View>
-        </SafeAreaView>
+        </View>
       );
     } else {
       return (
-        <SafeAreaView style={styles.container}>
+        <View>
           <Button
             title="Back"
             onPress={async () => {
@@ -294,25 +287,17 @@ export default ({navigation}) => {
               {playTime} / {duration}
             </Text>
             <View style={styles.playBtnWrapper}>
-              <RecordButton
-                style={styles.btn}
+              <Button
                 onPress={isPlaying ? onPausePlay : onStartPlay}
-                textStyle={styles.txt}>
-                {isPlaying ? 'Pause' : 'Play'}
-              </RecordButton>
+                title={isPlaying ? 'Pause' : 'Play'}></Button>
             </View>
             <View style={styles.viewRecorder}>
               <View style={styles.recordBtnWrapper}>
-                <RecordButton
-                  style={styles.btn}
-                  onPress={onStartRecord}
-                  textStyle={styles.txt}>
-                  New Recording
-                </RecordButton>
+                <Button onPress={onStartRecord} title="New Recording"></Button>
               </View>
             </View>
           </View>
-        </SafeAreaView>
+        </View>
       );
     }
   } else {
@@ -321,16 +306,11 @@ export default ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#455A64',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
   titleTxt: {
     marginTop: 100,
     color: 'white',
     fontSize: 28,
+    textAlign: 'center',
   },
   viewRecorder: {
     marginTop: 40,
@@ -380,6 +360,7 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     fontFamily: 'Helvetica Neue',
     letterSpacing: 3,
+    textAlign: 'center',
   },
   txtCounter: {
     marginTop: 12,
