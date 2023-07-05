@@ -91,7 +91,7 @@ export default ({navigation}) => {
   });
   if (!isNear) {
     return (
-      <View style={{marginTop: '25%'}}>
+      <View>
         <Button
           title="Back"
           onPress={() => {
@@ -106,6 +106,7 @@ export default ({navigation}) => {
         />
         <View
           style={{
+            marginTop: "25%",
             marginVertical: 15,
             marginHorizontal: 15,
             flexDirection: 'row',
