@@ -151,6 +151,7 @@ export default ({navigation}) => {
         recording.setVolume(1);
         setTrack(recording);
         setDuration(recording.getDuration());
+        setPlaySeconds(0);
       }
     });
     setTimeout(
