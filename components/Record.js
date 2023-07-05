@@ -254,96 +254,53 @@ export default ({navigation}) => {
         </SafeAreaView>
       );
     } else {
-      if (uri) {
-        return (
-          <SafeAreaView style={styles.container}>
-            <Button
-              title="Back"
-              onPress={async () => {
-                RNFS.exists(uri)
-                  .then(result => {
-                    console.log('file found');
-                    console.log(result);
-                    if (result) {
-                      return RNFS.unlink(uri)
-                        .then(() => {
-                          console.log('FILE DELETED');
-                        })
-                        .catch(err => {
-                          console.log(err.message);
-                        });
-                    }
-                  })
-                  .catch(err => {
-                    console.log(err.message);
-                  });
-                await onStopPlay();
-                InCallManager.stop();
-                navigation.goBack();
-              }}
-            />
-            <Text style={styles.titleTxt}>Playback</Text>
-            <View style={styles.viewPlayer}>
-              <TouchableOpacity
-                style={styles.viewBarWrapper}
-                onPress={onStatusPress}>
-                <View style={styles.viewBar}>
-                  <View style={viewBarPlayStyle()} />
-                </View>
-              </TouchableOpacity>
-              <Text style={styles.txtCounter}>
-                {playTime} / {duration}
-              </Text>
-              <View style={styles.playBtnWrapper}>
-                <RecordButton
-                  style={styles.btn}
-                  onPress={isPlaying ? onPausePlay : onStartPlay}
-                  textStyle={styles.txt}>
-                  {isPlaying ? 'Pause' : 'Play'}
-                </RecordButton>
+      return (
+        <SafeAreaView style={styles.container}>
+          <Button
+            title="Back"
+            onPress={async () => {
+              RNFS.exists(uri)
+                .then(result => {
+                  console.log('file found');
+                  console.log(result);
+                  if (result) {
+                    return RNFS.unlink(uri)
+                      .then(() => {
+                        console.log('FILE DELETED');
+                      })
+                      .catch(err => {
+                        console.log(err.message);
+                      });
+                  }
+                })
+                .catch(err => {
+                  console.log(err.message);
+                });
+              await onStopPlay();
+              InCallManager.stop();
+              navigation.goBack();
+            }}
+          />
+          <Text style={styles.titleTxt}>Playback</Text>
+          <View style={styles.viewPlayer}>
+            <TouchableOpacity
+              style={styles.viewBarWrapper}
+              onPress={onStatusPress}>
+              <View style={styles.viewBar}>
+                <View style={viewBarPlayStyle()} />
               </View>
-              <View style={styles.viewRecorder}>
-                <View style={styles.recordBtnWrapper}>
-                  <RecordButton
-                    style={styles.btn}
-                    onPress={onStartRecord}
-                    textStyle={styles.txt}>
-                    New Recording
-                  </RecordButton>
-                </View>
-              </View>
+            </TouchableOpacity>
+            <Text style={styles.txtCounter}>
+              {playTime} / {duration}
+            </Text>
+            <View style={styles.playBtnWrapper}>
+              <RecordButton
+                style={styles.btn}
+                onPress={isPlaying ? onPausePlay : onStartPlay}
+                textStyle={styles.txt}>
+                {isPlaying ? 'Pause' : 'Play'}
+              </RecordButton>
             </View>
-          </SafeAreaView>
-        );
-      } else {
-        return (
-          <SafeAreaView style={styles.container}>
-            <Button
-              title="Back"
-              onPress={async () => {
-                RNFS.exists(uri)
-                  .then(result => {
-                    console.log('file found');
-                    console.log(result);
-                    if (result) {
-                      return RNFS.unlink(uri)
-                        .then(() => {
-                          console.log('FILE DELETED');
-                        })
-                        .catch(err => {
-                          console.log(err.message);
-                        });
-                    }
-                  })
-                  .catch(err => {
-                    console.log(err.message);
-                  });
-                await onStopPlay();
-                InCallManager.stop();
-                navigation.goBack();
-              }}
-            />
-            <Text style={styles.titleTxt}>Audio</Text>
             <View style={styles.viewRecorder}>
               <View style={styles.recordBtnWrapper}>
                 <RecordButton
@@ -354,9 +311,9 @@ export default ({navigation}) => {
                 </RecordButton>
               </View>
             </View>
-          </SafeAreaView>
-        );
-      }
+          </View>
+        </SafeAreaView>
+      );
     }
   } else {
     return <View></View>;
