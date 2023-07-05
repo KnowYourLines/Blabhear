@@ -328,32 +328,9 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'center',
   },
-  viewBarWrapper: {
-    marginHorizontal: 28,
-    alignSelf: 'stretch',
-  },
-  viewBar: {
-    backgroundColor: '#ccc',
-    height: 20,
-    alignSelf: 'stretch',
-  },
-  playStatusTxt: {
-    marginTop: 8,
-    color: '#ccc',
-  },
   playBtnWrapper: {
     flexDirection: 'row',
     marginTop: 40,
-  },
-  btn: {
-    borderColor: 'white',
-    borderWidth: 1,
-  },
-  txt: {
-    color: 'white',
-    fontSize: 14,
-    marginHorizontal: 8,
-    marginVertical: 4,
   },
   txtRecordCounter: {
     marginTop: 32,
@@ -364,14 +341,5 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     letterSpacing: 3,
     textAlign: 'center',
-  },
-  txtCounter: {
-    marginTop: 12,
-    color: 'white',
-    fontSize: 20,
-    textAlignVertical: 'center',
-    fontWeight: '200',
-    fontFamily: 'Helvetica Neue',
-    letterSpacing: 3,
   },
 });
