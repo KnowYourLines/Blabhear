@@ -309,21 +309,23 @@ export default ({navigation}) => {
                   if (isPlaying) {
                     onStopPlay();
                   }
-                  fetch(uri).then(response => {
-                    const blob = response.blob();
-                    const requestOptions = {
-                      method: 'PUT',
-                      headers: {'Content-Type': 'audio/mp4'},
-                      body: blob,
-                    };
-                    console.log(uploadUrlState.uploadUrl)
-                    fetch(uploadUrlState.uploadUrl, requestOptions)
-                      .then(() => {
-                        deleteFile(uri);
-                        InCallManager.stop();
-                        navigation.goBack();
-                      })
-                      .catch(error => console.log(error));
+                  const request = new XMLHttpRequest();
+                  request.open('PUT', uploadUrlState.uploadUrl);
+                  request.onload = () => {
+                    if (request.status !== 200) {
+                      console.warn(`${request.status}: ${request.response}`);
+                    }
+                    deleteFile(uri);
+                    InCallManager.stop();
+                    navigation.goBack();
+                  };
+                  request.onerror = () => {
+                    console.warn(`${request.status} error: ${request.response}`);
+                  };
+                  request.setRequestHeader('Content-Type', 'audio/mp4');
+                  request.send({
+                    uri: uri,
+                    type: 'audio/mp4',
                   });
                 }}
                 title="Send"></Button>
