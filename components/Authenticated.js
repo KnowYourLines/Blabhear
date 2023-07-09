@@ -19,6 +19,7 @@ import {RoomWsContext} from '../context/RoomWsContext';
 import {RoomNameContext} from '../context/RoomNameContext';
 import {ContactsContext} from '../context/ContactsContext';
 import {ConnectedContext} from '../context/ConnectedContext';
+import {UploadUrlContext} from '../context/UploadUrlContext';
 
 export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
@@ -31,6 +32,7 @@ export default function Authenticated({navigation, route}) {
   const roomNameState = useContext(RoomNameContext);
   const contactsState = useContext(ContactsContext);
   const connectedState = useContext(ConnectedContext);
+  const uploadUrlState = useContext(UploadUrlContext);
 
   function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);
@@ -169,6 +171,15 @@ export default function Authenticated({navigation, route}) {
         });
       } else if ('updated_room_name' == data.type) {
         roomNameState.setRoomName(data.room_name);
+      } else if ('upload_url' in data) {
+        uploadUrlState.setUploadUrl(data.upload_url);
+        setTimeout(() => {
+          ws.send(
+            JSON.stringify({
+              command: 'fetch_upload_url',
+            }),
+          );
+        }, data.refresh_upload_destination_in);
       }
     };
 

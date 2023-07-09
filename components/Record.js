@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useContext} from 'react';
 import {
   View,
   DeviceEventEmitter,
@@ -23,6 +23,7 @@ import AudioRecorderPlayer, {
 } from 'react-native-audio-recorder-player';
 
 import RNFS from 'react-native-fs';
+import {UploadUrlContext} from '../context/UploadUrlContext';
 
 export default ({navigation}) => {
   const [isNear, setIsNear] = useState(false);
@@ -38,14 +39,15 @@ export default ({navigation}) => {
   const [audioRecorderPlayer, setAudioRecorderPlayer] = useState(
     new AudioRecorderPlayer(),
   );
+  const uploadUrlState = useContext(UploadUrlContext);
   audioRecorderPlayer.setSubscriptionDuration(0.1);
   const onStartPlay = async e => {
+    if (Platform.OS == 'android') {
+      Sound.setCategory('Voice');
+    } else {
+      Sound.setCategory('Playback');
+    }
     if (track) {
-      if (Platform.OS == 'android') {
-        Sound.setCategory('Voice');
-      } else {
-        Sound.setCategory('Playback');
-      }
       setIsPlaying(true);
       track.play(completed => {
         if (completed) {
@@ -68,6 +70,11 @@ export default ({navigation}) => {
   };
 
   const onStartRecord = useCallback(async () => {
+    if (Platform.OS == 'android') {
+      Sound.setCategory('Voice');
+    } else {
+      Sound.setCategory('Playback');
+    }
     setIsRecording(true);
     const audioSet = {
       AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
@@ -192,6 +199,27 @@ export default ({navigation}) => {
       setPlaySeconds(value);
     }
   };
+  const deleteFile = destinationUri => {
+    if (destinationUri) {
+      RNFS.exists(destinationUri)
+        .then(result => {
+          console.log('file found');
+          console.log(result);
+          if (result) {
+            return RNFS.unlink(destinationUri)
+              .then(() => {
+                console.log('FILE DELETED');
+              })
+              .catch(err => {
+                console.log(err.message);
+              });
+          }
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+    }
+  };
   const getAudioTimeString = seconds => {
     const h = parseInt(seconds / (60 * 60));
     const m = parseInt((seconds % (60 * 60)) / 60);
@@ -214,23 +242,7 @@ export default ({navigation}) => {
           <Button
             title="Back"
             onPress={async () => {
-              if (uri) {
-                RNFS.exists(uri)
-                  .then(result => {
-                    if (result) {
-                      return RNFS.unlink(uri)
-                        .then(() => {
-                          console.log('FILE DELETED');
-                        })
-                        .catch(err => {
-                          console.log(err.message);
-                        });
-                    }
-                  })
-                  .catch(err => {
-                    console.log(err.message);
-                  });
-              }
+              deleteFile(uri);
               await onStopRecord();
               InCallManager.stop();
               navigation.goBack();
@@ -251,25 +263,7 @@ export default ({navigation}) => {
           <Button
             title="Back"
             onPress={async () => {
-              if (uri) {
-                RNFS.exists(uri)
-                  .then(result => {
-                    console.log('file found');
-                    console.log(result);
-                    if (result) {
-                      return RNFS.unlink(uri)
-                        .then(() => {
-                          console.log('FILE DELETED');
-                        })
-                        .catch(err => {
-                          console.log(err.message);
-                        });
-                    }
-                  })
-                  .catch(err => {
-                    console.log(err.message);
-                  });
-              }
+              deleteFile(uri);
               await onStopPlay();
               InCallManager.stop();
               navigation.goBack();
@@ -309,6 +303,31 @@ export default ({navigation}) => {
                 onPress={isPlaying ? onPausePlay : onStartPlay}
                 title={isPlaying ? 'Pause' : 'Play'}></Button>
             </View>
+            <View style={styles.sendBtnWrapper}>
+              <Button
+                onPress={() => {
+                  if (isPlaying) {
+                    onStopPlay();
+                  }
+                  fetch(uri).then(response => {
+                    const blob = response.blob();
+                    const requestOptions = {
+                      method: 'PUT',
+                      headers: {'Content-Type': 'audio/mp4'},
+                      body: blob,
+                    };
+                    console.log(uploadUrlState.uploadUrl)
+                    fetch(uploadUrlState.uploadUrl, requestOptions)
+                      .then(() => {
+                        deleteFile(uri);
+                        InCallManager.stop();
+                        navigation.goBack();
+                      })
+                      .catch(error => console.log(error));
+                  });
+                }}
+                title="Send"></Button>
+            </View>
             <View style={styles.recordBtnWrapper}>
               <Button
                 onPress={() => {
@@ -341,7 +360,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   recordBtnWrapper: {
-    marginTop: 40,
+    marginTop: 60,
     flexDirection: 'row',
   },
   viewPlayer: {
@@ -350,6 +369,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   playBtnWrapper: {
+    flexDirection: 'row',
+    marginTop: 40,
+  },
+  sendBtnWrapper: {
     flexDirection: 'row',
     marginTop: 60,
   },
