@@ -83,8 +83,8 @@ export default ({navigation}) => {
     const uri = await audioRecorderPlayer
       .startRecorder(
         Platform.select({
-          ios: undefined,
-          android: undefined,
+          ios: `recording.m4a`,
+          android: `${RNFS.CachesDirectoryPath}/recording.m4a`,
         }),
         audioSet,
       )
