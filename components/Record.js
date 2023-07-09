@@ -40,28 +40,33 @@ export default ({navigation}) => {
   );
   audioRecorderPlayer.setSubscriptionDuration(0.1);
   const onStartPlay = async e => {
-    if (Platform.OS == 'android') {
-      Sound.setCategory('Voice');
-    } else {
-      Sound.setCategory('Playback');
-    }
-    setIsPlaying(true);
-    track.play(completed => {
-      if (completed) {
-        setIsPlaying(false);
+    if (track) {
+      if (Platform.OS == 'android') {
+        Sound.setCategory('Voice');
       } else {
-        console.log('playback failed due to audio decoding errors');
+        Sound.setCategory('Playback');
       }
-    });
+      setIsPlaying(true);
+      track.play(completed => {
+        if (completed) {
+          setIsPlaying(false);
+        } else {
+          console.log('playback failed due to audio decoding errors');
+        }
+      });
+    }
   };
   const onStopPlay = async () => {
-    setIsPlaying(false);
-    track.pause();
-    track.release();
-    if (timeout) {
-      clearInterval(timeout);
+    if (track) {
+      setIsPlaying(false);
+      track.pause();
+      track.release();
+      if (timeout) {
+        clearInterval(timeout);
+      }
     }
   };
+
   const onStartRecord = useCallback(async () => {
     setIsRecording(true);
     const audioSet = {
@@ -75,13 +80,17 @@ export default ({navigation}) => {
 
     console.log('audioSet', audioSet);
 
-    const uri = await audioRecorderPlayer.startRecorder(
-      Platform.select({
-        ios: undefined,
-        android: undefined,
-      }),
-      audioSet,
-    );
+    const uri = await audioRecorderPlayer
+      .startRecorder(
+        Platform.select({
+          ios: undefined,
+          android: undefined,
+        }),
+        audioSet,
+      )
+      .catch(error => {
+        console.warn(error);
+      });
 
     audioRecorderPlayer.addRecordBackListener(e => {
       setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
@@ -141,27 +150,31 @@ export default ({navigation}) => {
   });
   const onStopRecord = async () => {
     setIsRecording(false);
-    const result = await audioRecorderPlayer.stopRecorder();
-    audioRecorderPlayer.removeRecordBackListener();
-    const recording = new Sound(result, null, e => {
-      if (e) {
-        console.log('error loading track:', e);
-      } else {
-        recording.setVolume(1);
-        setTrack(recording);
-        setDuration(recording.getDuration());
-        setPlaySeconds(0);
-      }
+    const result = await audioRecorderPlayer.stopRecorder().catch(error => {
+      console.warn(error);
     });
-    setTimeout(
-      setInterval(() => {
-        recording.getCurrentTime((seconds, recordingIsPlaying) => {
-          if (recordingIsPlaying && !sliderEditing) {
-            setPlaySeconds(seconds);
-          }
-        });
-      }, 100),
-    );
+    audioRecorderPlayer.removeRecordBackListener();
+    if (result) {
+      const recording = new Sound(result, null, e => {
+        if (e) {
+          console.log('error loading track:', e);
+        } else {
+          recording.setVolume(1);
+          setTrack(recording);
+          setDuration(recording.getDuration());
+          setPlaySeconds(0);
+        }
+      });
+      setTimeout(
+        setInterval(() => {
+          recording.getCurrentTime((seconds, recordingIsPlaying) => {
+            if (recordingIsPlaying && !sliderEditing) {
+              setPlaySeconds(seconds);
+            }
+          });
+        }, 100),
+      );
+    }
   };
   const onPausePlay = async () => {
     setIsPlaying(false);
@@ -201,21 +214,23 @@ export default ({navigation}) => {
           <Button
             title="Back"
             onPress={async () => {
-              RNFS.exists(uri)
-                .then(result => {
-                  if (result) {
-                    return RNFS.unlink(uri)
-                      .then(() => {
-                        console.log('FILE DELETED');
-                      })
-                      .catch(err => {
-                        console.log(err.message);
-                      });
-                  }
-                })
-                .catch(err => {
-                  console.log(err.message);
-                });
+              if (uri) {
+                RNFS.exists(uri)
+                  .then(result => {
+                    if (result) {
+                      return RNFS.unlink(uri)
+                        .then(() => {
+                          console.log('FILE DELETED');
+                        })
+                        .catch(err => {
+                          console.log(err.message);
+                        });
+                    }
+                  })
+                  .catch(err => {
+                    console.log(err.message);
+                  });
+              }
               await onStopRecord();
               InCallManager.stop();
               navigation.goBack();
@@ -236,23 +251,25 @@ export default ({navigation}) => {
           <Button
             title="Back"
             onPress={async () => {
-              RNFS.exists(uri)
-                .then(result => {
-                  console.log('file found');
-                  console.log(result);
-                  if (result) {
-                    return RNFS.unlink(uri)
-                      .then(() => {
-                        console.log('FILE DELETED');
-                      })
-                      .catch(err => {
-                        console.log(err.message);
-                      });
-                  }
-                })
-                .catch(err => {
-                  console.log(err.message);
-                });
+              if (uri) {
+                RNFS.exists(uri)
+                  .then(result => {
+                    console.log('file found');
+                    console.log(result);
+                    if (result) {
+                      return RNFS.unlink(uri)
+                        .then(() => {
+                          console.log('FILE DELETED');
+                        })
+                        .catch(err => {
+                          console.log(err.message);
+                        });
+                    }
+                  })
+                  .catch(err => {
+                    console.log(err.message);
+                  });
+              }
               await onStopPlay();
               InCallManager.stop();
               navigation.goBack();
