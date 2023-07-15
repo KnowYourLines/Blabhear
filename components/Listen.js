@@ -46,7 +46,13 @@ export default ({navigation, route}) => {
         console.log('error loading track:', e);
       } else {
         recording.setVolume(1);
-        recording.play();
+        recording.play(completed => {
+          if (completed) {
+            setIsPlaying(false);
+          } else {
+            console.log('playback failed due to audio decoding errors');
+          }
+        });
         setTrack(recording);
         setDuration(recording.getDuration());
       }
