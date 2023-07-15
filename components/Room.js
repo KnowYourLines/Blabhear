@@ -9,14 +9,17 @@ import {
   Platform,
 } from 'react-native';
 import Button from './Button';
+import Messages from './Messages';
 import {HeaderBackButton} from '@react-navigation/elements';
 import {RoomNameContext} from '../context/RoomNameContext';
 import {ConnectedContext} from '../context/ConnectedContext';
+import {MessagesContext} from '../context/MessagesContext';
 
 export default ({navigation, route}) => {
   const state = useContext(RoomNameContext);
   const [members, setMembers] = useState(route.params.members);
   const connectedState = useContext(ConnectedContext);
+  const messagesState = useContext(MessagesContext);
 
   if (Platform.OS == 'ios') {
     NativeModules.InCallManager.addListener('Proximity');
@@ -86,17 +89,15 @@ export default ({navigation, route}) => {
           navigation.navigate('Listen');
         }}
       />
-      <View
-        style={{
-          height: '10%',
-        }}
-      />
-      <Button
-        title="Record"
-        onPress={() => {
-          navigation.navigate('Record');
-        }}
-      />
+      <Messages messages={messagesState.messages} />
+      <View style={{marginBottom: '5%'}}>
+        <Button
+          title="Record"
+          onPress={() => {
+            navigation.navigate('Record');
+          }}
+        />
+      </View>
     </View>
   );
 };

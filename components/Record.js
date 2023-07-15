@@ -24,6 +24,7 @@ import AudioRecorderPlayer, {
 
 import RNFS from 'react-native-fs';
 import {UploadUrlContext} from '../context/UploadUrlContext';
+import {RoomWsContext} from '../context/RoomWsContext';
 
 export default ({navigation}) => {
   const [isNear, setIsNear] = useState(false);
@@ -40,6 +41,7 @@ export default ({navigation}) => {
     new AudioRecorderPlayer(),
   );
   const uploadUrlState = useContext(UploadUrlContext);
+  const roomWsState = useContext(RoomWsContext);
   audioRecorderPlayer.setSubscriptionDuration(0.1);
   const onStartPlay = async e => {
     if (Platform.OS == 'android') {
@@ -316,11 +318,18 @@ export default ({navigation}) => {
                       console.warn(`${request.status}: ${request.response}`);
                     }
                     deleteFile(uri);
+                    roomWsState.roomWs.send(
+                      JSON.stringify({
+                        command: 'send_message',
+                      }),
+                    );
                     InCallManager.stop();
                     navigation.goBack();
                   };
                   request.onerror = () => {
-                    console.warn(`${request.status} error: ${request.response}`);
+                    console.warn(
+                      `${request.status} error: ${request.response}`,
+                    );
                   };
                   request.setRequestHeader('Content-Type', 'audio/mp4');
                   request.send({

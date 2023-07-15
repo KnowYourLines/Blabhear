@@ -20,6 +20,7 @@ import {RoomNameContext} from '../context/RoomNameContext';
 import {ContactsContext} from '../context/ContactsContext';
 import {ConnectedContext} from '../context/ConnectedContext';
 import {UploadUrlContext} from '../context/UploadUrlContext';
+import {MessagesContext} from '../context/MessagesContext';
 
 export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
@@ -33,6 +34,7 @@ export default function Authenticated({navigation, route}) {
   const contactsState = useContext(ContactsContext);
   const connectedState = useContext(ConnectedContext);
   const uploadUrlState = useContext(UploadUrlContext);
+  const messagesState = useContext(MessagesContext);
 
   function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);
@@ -180,6 +182,15 @@ export default function Authenticated({navigation, route}) {
             }),
           );
         }, data.refresh_upload_destination_in);
+      } else if ('message_notifications' in data) {
+        messagesState.setMessages(data.message_notifications)
+        setTimeout(() => {
+          ws.send(
+            JSON.stringify({
+              command: 'fetch_message_notifications',
+            }),
+          );
+        }, data.refresh_message_notifications_in);
       }
     };
 
