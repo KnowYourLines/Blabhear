@@ -22,6 +22,9 @@ export default ({notifications}) => {
             {item.room__display_name}
           </Text>
           <Text style={styles.subtitle} numberOfLines={1}>
+            {item.message__creator__display_name ? item.message__creator__display_name + " spoke": ""} 
+          </Text>
+          <Text style={styles.subtitle} numberOfLines={1}>
             {item.timestamp}
           </Text>
         </TouchableOpacity>

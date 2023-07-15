@@ -83,13 +83,7 @@ export default ({navigation, route}) => {
   }
   return (
     <View style={styles.listContainer}>
-      <Button
-        title="Listen"
-        onPress={() => {
-          navigation.navigate('Listen');
-        }}
-      />
-      <Messages messages={messagesState.messages} />
+      <Messages messages={messagesState.messages} navigation={navigation} />
       <View style={{marginBottom: '5%'}}>
         <Button
           title="Record"

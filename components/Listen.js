@@ -12,7 +12,7 @@ import Sound from 'react-native-sound';
 import Button from './Button';
 import InCallManager from 'react-native-incall-manager';
 
-export default ({navigation}) => {
+export default ({navigation, route}) => {
   const [isNear, setIsNear] = useState(false);
   const [track, setTrack] = useState(null);
   const [playSeconds, setPlaySeconds] = useState(0);
@@ -41,20 +41,16 @@ export default ({navigation}) => {
     } else {
       Sound.setCategory('Playback');
     }
-    const recording = new Sound(
-      'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-      null,
-      e => {
-        if (e) {
-          console.log('error loading track:', e);
-        } else {
-          recording.setVolume(1);
-          recording.play();
-          setTrack(recording);
-          setDuration(recording.getDuration());
-        }
-      },
-    );
+    const recording = new Sound(route.params.soundUrl, null, e => {
+      if (e) {
+        console.log('error loading track:', e);
+      } else {
+        recording.setVolume(1);
+        recording.play();
+        setTrack(recording);
+        setDuration(recording.getDuration());
+      }
+    });
     setTimeout(
       setInterval(() => {
         recording.getCurrentTime((seconds, recordingIsPlaying) => {

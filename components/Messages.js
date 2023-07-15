@@ -2,12 +2,13 @@ import React, {useContext} from 'react';
 import {View, StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
 import {RoomWsContext} from '../context/RoomWsContext';
 
-export default ({messages}) => {
+export default ({navigation, messages}) => {
   const state = useContext(RoomWsContext);
 
   renderItem = ({item, index}) => {
     const onPress = () => {
       console.log(messages[index]);
+      navigation.navigate('Listen', {soundUrl: messages[index].url});
     };
     return (
       <View style={styles.item}>
@@ -36,7 +37,6 @@ export default ({messages}) => {
 const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
-    marginTop: '5%',
   },
   item: {
     flexDirection: 'row',
