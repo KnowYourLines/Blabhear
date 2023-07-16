@@ -8,6 +8,12 @@ export default ({navigation, messages}) => {
   renderItem = ({item, index}) => {
     const onPress = () => {
       console.log(messages[index]);
+      state.roomWs.send(
+        JSON.stringify({
+          command: 'read_message_notification',
+          message_notification_id: messages[index]['id'],
+        }),
+      );
       navigation.navigate('Listen', {soundUrl: messages[index].url});
     };
     return (
