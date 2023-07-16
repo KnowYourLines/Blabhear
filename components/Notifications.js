@@ -16,13 +16,15 @@ export default ({notifications}) => {
       );
     };
     return (
-      <View style={styles.item}>
+      <View style={item.read ? styles.item : styles.unreadItem}>
         <TouchableOpacity style={styles.title} onPress={onPress}>
           <Text style={styles.title} numberOfLines={1}>
             {item.room__display_name}
           </Text>
           <Text style={styles.subtitle} numberOfLines={1}>
-            {item.message__creator__display_name ? item.message__creator__display_name + " spoke": ""} 
+            {item.message__creator__display_name
+              ? item.message__creator__display_name + ' spoke'
+              : ''}
           </Text>
           <Text style={styles.subtitle} numberOfLines={1}>
             {item.timestamp}
@@ -60,7 +62,14 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 15,
-    color: 'white',
+    color: 'grey',
     width: '100%',
+  },
+  unreadItem: {
+    flexDirection: 'row',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'white',
+    backgroundColor: 'blue',
   },
 });

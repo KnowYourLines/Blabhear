@@ -11,7 +11,7 @@ export default ({navigation, messages}) => {
       navigation.navigate('Listen', {soundUrl: messages[index].url});
     };
     return (
-      <View style={styles.item}>
+      <View style={item.read ? styles.item : styles.unreadItem}>
         <TouchableOpacity style={styles.title} onPress={onPress}>
           <Text style={styles.title} numberOfLines={1}>
             {item.message__creator__display_name}
@@ -51,7 +51,14 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 15,
-    color: 'white',
+    color: 'grey',
     width: '100%',
+  },
+  unreadItem: {
+    flexDirection: 'row',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'white',
+    backgroundColor: 'blue',
   },
 });
