@@ -14,12 +14,14 @@ import {HeaderBackButton} from '@react-navigation/elements';
 import {RoomNameContext} from '../context/RoomNameContext';
 import {ConnectedContext} from '../context/ConnectedContext';
 import {MessagesContext} from '../context/MessagesContext';
+import {RoomWsContext} from '../context/RoomWsContext';
 
 export default ({navigation, route}) => {
   const state = useContext(RoomNameContext);
   const [members, setMembers] = useState(route.params.members);
   const connectedState = useContext(ConnectedContext);
   const messagesState = useContext(MessagesContext);
+  const roomWsState = useContext(RoomWsContext);
 
   if (Platform.OS == 'ios') {
     NativeModules.InCallManager.addListener('Proximity');
@@ -56,6 +58,11 @@ export default ({navigation, route}) => {
           {...props}
           onPress={() => {
             navigation.navigate('Home');
+            roomWsState.roomWs.send(
+              JSON.stringify({
+                command: 'disconnect',
+              }),
+            );
           }}
         />
       ),
