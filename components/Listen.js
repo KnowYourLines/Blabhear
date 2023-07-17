@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   DeviceEventEmitter,
@@ -11,6 +11,7 @@ import Slider from '@react-native-community/slider';
 import Sound from 'react-native-sound';
 import Button from './Button';
 import InCallManager from 'react-native-incall-manager';
+import {RoomWsContext} from '../context/RoomWsContext';
 
 export default ({navigation, route}) => {
   const [isNear, setIsNear] = useState(false);
@@ -20,6 +21,7 @@ export default ({navigation, route}) => {
   const [sliderEditing, setSliderEditing] = useState(false);
   const [timeout, setTimeout] = useState(null);
   const [isPlaying, setIsPlaying] = useState(true);
+  const roomWsState = useContext(RoomWsContext);
   const onStartPlay = async e => {
     setIsPlaying(true);
     track.play(completed => {
@@ -147,6 +149,25 @@ export default ({navigation, route}) => {
               onPress={isPlaying ? onPausePlay : onStartPlay}
               title={isPlaying ? 'Pause' : 'Play'}></Button>
           </View>
+          <View style={styles.reportBtnWrapper}>
+            <Button
+              onPress={() => {
+                roomWsState.roomWs.send(
+                  JSON.stringify({
+                    command: 'report_message_notification',
+                    message_notification_id: route.params.messageNotificationId
+                  }),
+                );
+                InCallManager.stop();
+                navigation.goBack();
+                track.pause();
+                track.release();
+                if (timeout) {
+                  clearInterval(timeout);
+                }
+              }}
+              title="Report Abuse"></Button>
+          </View>
         </View>
       </View>
     );
@@ -164,5 +185,9 @@ const styles = StyleSheet.create({
   playBtnWrapper: {
     flexDirection: 'row',
     marginTop: 40,
+  },
+  reportBtnWrapper: {
+    flexDirection: 'row',
+    marginTop: 80,
   },
 });

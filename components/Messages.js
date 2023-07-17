@@ -18,7 +18,10 @@ export default ({navigation, messages}) => {
           message_notification_id: messages[index]['id'],
         }),
       );
-      navigation.navigate('Listen', {soundUrl: messages[index].url});
+      navigation.navigate('Listen', {
+        soundUrl: messages[index].url,
+        messageNotificationId: messages[index].id,
+      });
     };
     return (
       <View style={item.read ? styles.item : styles.unreadItem}>
