@@ -1,11 +1,15 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import {View, StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
+import moment from 'moment';
 import {RoomWsContext} from '../context/RoomWsContext';
 
 export default ({notifications}) => {
   const state = useContext(RoomWsContext);
+  const [refresh, setRefresh] = useState(true);
+  setInterval(() => setRefresh(!refresh), 45000);
 
   renderItem = ({item, index}) => {
+    const timestamp = moment.unix(item.timestamp).fromNow();
     const onPress = () => {
       console.log(notifications[index]);
       state.roomWs.send(
@@ -27,7 +31,7 @@ export default ({notifications}) => {
               : ''}
           </Text>
           <Text style={styles.subtitle} numberOfLines={1}>
-            {item.timestamp}
+            {timestamp === 'in a few seconds' ? 'just now' : timestamp}
           </Text>
         </TouchableOpacity>
       </View>
