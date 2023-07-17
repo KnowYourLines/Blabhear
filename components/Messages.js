@@ -21,6 +21,7 @@ export default ({navigation, messages}) => {
       navigation.navigate('Listen', {
         soundUrl: messages[index].url,
         messageNotificationId: messages[index].id,
+        isOwnMessage: messages[index].is_own_message
       });
     };
     return (

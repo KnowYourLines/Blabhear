@@ -149,25 +149,28 @@ export default ({navigation, route}) => {
               onPress={isPlaying ? onPausePlay : onStartPlay}
               title={isPlaying ? 'Pause' : 'Play'}></Button>
           </View>
-          <View style={styles.reportBtnWrapper}>
-            <Button
-              onPress={() => {
-                roomWsState.roomWs.send(
-                  JSON.stringify({
-                    command: 'report_message_notification',
-                    message_notification_id: route.params.messageNotificationId
-                  }),
-                );
-                InCallManager.stop();
-                navigation.goBack();
-                track.pause();
-                track.release();
-                if (timeout) {
-                  clearInterval(timeout);
-                }
-              }}
-              title="Report Abuse"></Button>
-          </View>
+          {!route.params.isOwnMessage && (
+            <View style={styles.reportBtnWrapper}>
+              <Button
+                onPress={() => {
+                  roomWsState.roomWs.send(
+                    JSON.stringify({
+                      command: 'report_message_notification',
+                      message_notification_id:
+                        route.params.messageNotificationId,
+                    }),
+                  );
+                  InCallManager.stop();
+                  navigation.goBack();
+                  track.pause();
+                  track.release();
+                  if (timeout) {
+                    clearInterval(timeout);
+                  }
+                }}
+                title="Report Abuse"></Button>
+            </View>
+          )}
         </View>
       </View>
     );
