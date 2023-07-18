@@ -99,6 +99,9 @@ export default ({navigation}) => {
       )
       .catch(error => {
         console.warn(error);
+        setIsRecording(false);
+        InCallManager.stop();
+        navigation.goBack();
       });
 
     audioRecorderPlayer.addRecordBackListener(e => {
