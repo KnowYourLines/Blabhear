@@ -24,17 +24,21 @@ export default ({navigation, route}) => {
   const roomWsState = useContext(RoomWsContext);
   const onStartPlay = async e => {
     setIsPlaying(true);
-    track.play(completed => {
-      if (completed) {
-        setIsPlaying(false);
-      } else {
-        console.log('playback failed due to audio decoding errors');
-      }
-    });
+    if (track) {
+      track.play(completed => {
+        if (completed) {
+          setIsPlaying(false);
+        } else {
+          console.log('playback failed due to audio decoding errors');
+        }
+      });
+    }
   };
   onPausePlay = async () => {
     setIsPlaying(false);
-    track.pause();
+    if (track) {
+      track.pause();
+    }
   };
   React.useEffect(() => {
     InCallManager.start();
@@ -107,8 +111,10 @@ export default ({navigation, route}) => {
           onPress={() => {
             InCallManager.stop();
             navigation.goBack();
-            track.pause();
-            track.release();
+            if (track) {
+              track.pause();
+              track.release();
+            }
             if (timeout) {
               clearInterval(timeout);
             }
@@ -162,8 +168,10 @@ export default ({navigation, route}) => {
                   );
                   InCallManager.stop();
                   navigation.goBack();
-                  track.pause();
-                  track.release();
+                  if (track) {
+                    track.pause();
+                    track.release();
+                  }
                   if (timeout) {
                     clearInterval(timeout);
                   }
