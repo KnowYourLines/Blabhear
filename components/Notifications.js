@@ -27,7 +27,9 @@ export default ({notifications}) => {
           </Text>
           <Text style={styles.subtitle} numberOfLines={1}>
             {item.message__creator__display_name
-              ? item.message__creator__display_name + ' spoke'
+              ? item.is_own_message
+                ? 'You spoke'
+                : item.message__creator__display_name + ' spoke'
               : ''}
           </Text>
           <Text style={styles.subtitle} numberOfLines={1}>
