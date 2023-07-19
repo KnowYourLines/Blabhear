@@ -5,6 +5,7 @@ import {
   StyleSheet,
   DeviceEventEmitter,
   Platform,
+  Alert,
 } from 'react-native';
 
 import auth from '@react-native-firebase/auth';
@@ -49,10 +50,21 @@ function App() {
   );
   auth().onAuthStateChanged(user => {
     if (user) {
-      user.getIdToken().then(token => {
-        setAuthToken(token);
-        setUserId(user.uid);
-      });
+      user
+        .getIdToken()
+        .then(token => {
+          setAuthToken(token);
+          setUserId(user.uid);
+        })
+        .catch(error => {
+          console.log(error.message);
+          Alert.alert('Uh-oh!', error.message, [
+            {
+              text: 'OK',
+              style: 'OK',
+            },
+          ]);
+        });
       setAuthenticated(true);
     } else {
       setAuthToken('');
