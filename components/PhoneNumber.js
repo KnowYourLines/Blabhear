@@ -123,7 +123,7 @@ export default function PhoneNumber() {
               setConfirm(confirmation);
             } catch (error) {
               console.log(error.message);
-              Alert.alert(error.message, '', [
+              Alert.alert('Uh-oh!', error.message, [
                 {
                   text: 'OK',
                   style: 'OK',

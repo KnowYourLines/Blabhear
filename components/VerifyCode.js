@@ -2,12 +2,12 @@ import React, {useState} from 'react';
 import {StyleSheet, Text, View, TextInput, Alert} from 'react-native';
 import Button from './Button';
 
-export default function OTP({confirm}) {
+export default function VerifyCode({confirm}) {
   const [code, setCode] = useState('');
 
   return (
     <View style={styles.screen}>
-      <Text style={styles.text}>Enter OTP</Text>
+      <Text style={styles.text}>Enter Verification Code</Text>
       <TextInput
         value={code}
         onChangeText={setCode}
@@ -21,7 +21,7 @@ export default function OTP({confirm}) {
             await confirm.confirm(code);
           } catch (error) {
             console.log(error.message);
-            Alert.alert(error.message, '', [
+            Alert.alert('Uh-oh!', error.message, [
               {
                 text: 'OK',
                 style: 'OK',
