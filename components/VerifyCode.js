@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, TextInput} from 'react-native';
+import {StyleSheet, Text, View, TextInput, Alert} from 'react-native';
 import Button from './Button';
 
 export default function OTP({confirm}) {
@@ -21,6 +21,12 @@ export default function OTP({confirm}) {
             await confirm.confirm(code);
           } catch (error) {
             console.log(error.message);
+            Alert.alert(error.message, '', [
+              {
+                text: 'OK',
+                style: 'OK',
+              },
+            ]);
           }
         }}
       />
