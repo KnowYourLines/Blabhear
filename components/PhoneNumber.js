@@ -6,12 +6,15 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  DeviceEventEmitter
+  DeviceEventEmitter,
 } from 'react-native';
-import Button from './Button'
+import Button from './Button';
+import VerifyCode from './VerifyCode';
 import {CountryPicker} from 'react-native-country-codes-picker';
+import auth from '@react-native-firebase/auth';
 
 export default function PhoneNumber() {
+  const [confirm, setConfirm] = useState(null);
   const [show, setShow] = useState(true);
   const [countryDialCode, setCountryDialCode] = useState('');
   const [alpha2CountryCode, setAlpha2CountryCode] = useState('');
@@ -21,7 +24,7 @@ export default function PhoneNumber() {
     // the package is buggy and requires show state to be true before being set to false to work
     setShow(false);
     return () => {
-      DeviceEventEmitter.removeAllListeners("phoneSignIn")
+      DeviceEventEmitter.removeAllListeners('alpha2CountryCode');
     };
   }, []);
 
@@ -47,7 +50,7 @@ export default function PhoneNumber() {
     return true;
   };
 
-  return (
+  return !confirm ? (
     <View style={styles.screen}>
       <Text style={styles.text}>Enter Phone Number</Text>
       <CountryPicker
@@ -60,7 +63,7 @@ export default function PhoneNumber() {
           },
           textInput: {
             backgroundColor: 'grey',
-            color: 'white'
+            color: 'white',
           },
           searchMessageText: {
             color: 'black',
@@ -69,10 +72,10 @@ export default function PhoneNumber() {
             height: '80%',
           },
           dialCode: {
-            color: 'white'
+            color: 'white',
           },
           countryName: {
-            color: 'white'
+            color: 'white',
           },
         }}
         show={show}
@@ -105,14 +108,28 @@ export default function PhoneNumber() {
           onChangeText={setPhoneNumber}
         />
       </View>
-      <Button 
+
+      <Button
         title="Sign In"
-        onPress={() => {
-          if (inputsValid())
-            DeviceEventEmitter.emit("phoneSignIn", {intlPhoneNum: countryDialCode + phoneNumber, alpha2CountryCode: alpha2CountryCode});
+        onPress={async () => {
+          if (inputsValid()) {
+            DeviceEventEmitter.emit('alpha2CountryCode', {
+              alpha2CountryCode: alpha2CountryCode,
+            });
+            try {
+              const confirmation = await auth().signInWithPhoneNumber(
+                countryDialCode + phoneNumber,
+              );
+              setConfirm(confirmation);
+            } catch (error) {
+              console.log(error.message);
+            }
+          }
         }}
       />
     </View>
+  ) : (
+    <VerifyCode confirm={confirm} />
   );
 }
 
@@ -135,7 +152,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     color: 'white',
-    height: '50%'
+    height: '50%',
   },
   countryInput: {
     borderWidth: 2,
@@ -145,7 +162,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     padding: 10,
     borderRadius: 8,
-    height: '50%'
+    height: '50%',
   },
   text: {
     fontSize: 25,

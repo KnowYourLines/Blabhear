@@ -1,21 +1,9 @@
 import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  DeviceEventEmitter,
-} from 'react-native';
+import {StyleSheet, Text, View, TextInput} from 'react-native';
 import Button from './Button';
 
-export default function OTP() {
+export default function OTP({confirm}) {
   const [code, setCode] = useState('');
-
-  React.useEffect(() => {
-    return () => {
-      DeviceEventEmitter.removeAllListeners('confirmOTP');
-    };
-  }, []);
 
   return (
     <View style={styles.screen}>
@@ -28,7 +16,13 @@ export default function OTP() {
       />
       <Button
         title="Confirm"
-        onPress={() => DeviceEventEmitter.emit('confirmOTP', {OTP: code})}
+        onPress={async () => {
+          try {
+            await confirm.confirm(code);
+          } catch (error) {
+            console.log(error.message);
+          }
+        }}
       />
     </View>
   );

@@ -9,7 +9,6 @@ import {
 
 import auth from '@react-native-firebase/auth';
 import PhoneNumber from './components/PhoneNumber';
-import VerifyCode from './components/VerifyCode';
 import Authenticated from './components/Authenticated';
 import RegisteredContacts from './components/RegisteredContacts';
 import Room from './components/Room';
@@ -25,12 +24,11 @@ import {RoomNameContextProvider} from './context/RoomNameContext';
 import {ContactsContextProvider} from './context/ContactsContext';
 import {ConnectedContextProvider} from './context/ConnectedContext';
 import {UploadUrlContextProvider} from './context/UploadUrlContext';
-import { MessagesContextProvider } from './context/MessagesContext';
+import {MessagesContextProvider} from './context/MessagesContext';
 
 const Stack = createNativeStackNavigator();
 
 function App() {
-  const [confirm, setConfirm] = useState(null);
   const [alpha2CountryCode, setAlpha2CountryCode] = useState('');
   const [userId, setUserId] = useState('');
   const [authToken, setAuthToken] = useState('');
@@ -46,33 +44,9 @@ function App() {
 
   const netInfo = useNetInfo();
 
-  async function signIn(phoneNumber, countryCode) {
-    try {
-      const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
-      setConfirm(confirmation);
-      setAlpha2CountryCode(countryCode);
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
-  DeviceEventEmitter.addListener('phoneSignIn', eventData =>
-    signIn(eventData.intlPhoneNum, eventData.alpha2CountryCode),
+  DeviceEventEmitter.addListener('alpha2CountryCode', eventData =>
+    setAlpha2CountryCode(eventData.alpha2CountryCode),
   );
-
-  async function confirmVerificationCode(code) {
-    try {
-      await confirm.confirm(code);
-      setConfirm(null);
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
-  DeviceEventEmitter.addListener('confirmOTP', eventData =>
-    confirmVerificationCode(eventData.OTP),
-  );
-
   auth().onAuthStateChanged(user => {
     if (user) {
       user.getIdToken().then(token => {
@@ -209,19 +183,6 @@ function App() {
       </NavigationContainer>
     );
   }
-
-  if (confirm)
-    return (
-      <NavigationContainer theme={navTheme}>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="OTP"
-            component={VerifyCode}
-            options={{headerShown: false}}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    );
 
   if (!authenticated)
     return (
