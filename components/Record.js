@@ -103,9 +103,16 @@ export default ({navigation}) => {
         InCallManager.stop();
         navigation.goBack();
       });
-
+    let startPosition = null;
     audioRecorderPlayer.addRecordBackListener(e => {
-      setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+      if (!startPosition) {
+        startPosition = e.currentPosition;
+      }
+      setRecordTime(
+        audioRecorderPlayer.mmssss(
+          Math.floor(e.currentPosition - startPosition),
+        ),
+      );
     });
     console.log(`uri: ${uri}`);
     setUri(uri);
@@ -175,17 +182,17 @@ export default ({navigation}) => {
           setTrack(recording);
           setDuration(recording.getDuration());
           setPlaySeconds(0);
+          setTimeout(
+            setInterval(() => {
+              recording.getCurrentTime((seconds, recordingIsPlaying) => {
+                if (recordingIsPlaying && !sliderEditing) {
+                  setPlaySeconds(seconds);
+                }
+              });
+            }, 100),
+          );
         }
       });
-      setTimeout(
-        setInterval(() => {
-          recording.getCurrentTime((seconds, recordingIsPlaying) => {
-            if (recordingIsPlaying && !sliderEditing) {
-              setPlaySeconds(seconds);
-            }
-          });
-        }, 100),
-      );
     }
   };
   const onPausePlay = async () => {
