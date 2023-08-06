@@ -11,7 +11,6 @@ export default ({notifications}) => {
   renderItem = ({item, index}) => {
     const timestamp = moment.unix(item.timestamp).fromNow();
     const onPress = () => {
-      console.log(notifications[index]);
       state.roomWs.send(
         JSON.stringify({
           command: 'connect',

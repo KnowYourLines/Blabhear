@@ -5,13 +5,40 @@ import {RoomWsContext} from '../context/RoomWsContext';
 
 export default ({navigation, messages}) => {
   const state = useContext(RoomWsContext);
+  const [currentMsg, setCurrentMsg] = useState(null);
+  const [currentMsgTimestamp, setCurrentMsgTimestamp] = useState(null);
   const [refresh, setRefresh] = useState(true);
   setInterval(() => setRefresh(!refresh), 45000);
+
+  const getNextMessage = timestamp => {
+    const message = messages.find(message => message.timestamp > timestamp);
+    return message;
+  };
+
+  const getPrevMessage = timestamp => {
+    const message = messages.findLast(message => message.timestamp < timestamp);
+    return message;
+  };
+
+  React.useEffect(() => {
+    if (messages.length > 0) {
+      const firstUnreadMsg = messages.find(message => !message.read);
+      if (!currentMsgTimestamp && firstUnreadMsg) {
+        console.log('set first message')
+        setCurrentMsg(firstUnreadMsg);
+        setCurrentMsgTimestamp(firstUnreadMsg.timestamp);
+      } else if (!currentMsgTimestamp && !firstUnreadMsg) {
+        console.log('set last message as first message')
+        const lastMsg = messages.at(-1);
+        setCurrentMsg(lastMsg);
+        setCurrentMsgTimestamp(lastMsg.timestamp);
+      }
+    }
+  }, [messages]);
 
   renderItem = ({item, index}) => {
     const timestamp = moment.unix(item.timestamp).fromNow();
     const onPress = () => {
-      console.log(messages[index]);
       state.roomWs.send(
         JSON.stringify({
           command: 'read_message_notification',
@@ -21,7 +48,7 @@ export default ({navigation, messages}) => {
       navigation.navigate('Listen', {
         soundUrl: messages[index].url,
         messageNotificationId: messages[index].id,
-        isOwnMessage: messages[index].is_own_message
+        isOwnMessage: messages[index].is_own_message,
       });
     };
     return (

@@ -120,7 +120,6 @@ export default function Authenticated({navigation, route}) {
     };
 
     ws.onmessage = message => {
-      console.log(message.data);
       const data = JSON.parse(message.data);
       if ('display_name' in data) {
         setDisplayName(data.display_name);
@@ -165,7 +164,6 @@ export default function Authenticated({navigation, route}) {
 
     ws.onmessage = message => {
       const data = JSON.parse(message.data);
-      console.log(data);
       if ('new_room' == data.type) {
         roomNameState.setRoomName(data.room_name);
         navigation.navigate('Room', {
@@ -183,7 +181,7 @@ export default function Authenticated({navigation, route}) {
           );
         }, data.refresh_upload_destination_in);
       } else if ('message_notifications' in data) {
-        messagesState.setMessages(data.message_notifications)
+        messagesState.setMessages(data.message_notifications);
         setTimeout(() => {
           ws.send(
             JSON.stringify({
