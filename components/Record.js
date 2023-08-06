@@ -245,7 +245,7 @@ export default ({navigation}) => {
       return (
         <View>
           <Button
-            title="Back"
+            title="Cancel"
             onPress={async () => {
               deleteFile(uri);
               await onStopRecord();
@@ -266,7 +266,7 @@ export default ({navigation}) => {
       return (
         <View>
           <Button
-            title="Back"
+            title="Cancel"
             onPress={async () => {
               deleteFile(uri);
               await onStopPlay();
@@ -341,16 +341,6 @@ export default ({navigation}) => {
                   });
                 }}
                 title="Send"></Button>
-            </View>
-            <View style={styles.recordBtnWrapper}>
-              <Button
-                onPress={() => {
-                  if (isPlaying) {
-                    onStopPlay();
-                  }
-                  onStartRecord();
-                }}
-                title="New Recording"></Button>
             </View>
           </View>
         </View>
