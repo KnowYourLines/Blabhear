@@ -12,6 +12,7 @@ import Sound from 'react-native-sound';
 import Button from './Button';
 import InCallManager from 'react-native-incall-manager';
 import {RoomWsContext} from '../context/RoomWsContext';
+import {MessagePageContext} from '../context/MessagePageContext';
 
 export default ({navigation, route}) => {
   const [isNear, setIsNear] = useState(false);
@@ -22,6 +23,7 @@ export default ({navigation, route}) => {
   const [timeout, setTimeout] = useState(null);
   const [isPlaying, setIsPlaying] = useState(true);
   const roomWsState = useContext(RoomWsContext);
+  const messagePageState = useContext(MessagePageContext);
   const onStartPlay = async e => {
     setIsPlaying(true);
     if (track) {
@@ -164,6 +166,7 @@ export default ({navigation, route}) => {
                       command: 'report_message_notification',
                       message_notification_id:
                         route.params.messageNotificationId,
+                      page_number: messagePageState.messagePage,
                     }),
                   );
                   InCallManager.stop();

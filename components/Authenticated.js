@@ -22,6 +22,7 @@ import {ConnectedContext} from '../context/ConnectedContext';
 import {UploadUrlContext} from '../context/UploadUrlContext';
 import {UploadFilenameContext} from '../context/UploadFilenameContext';
 import {MessagesContext} from '../context/MessagesContext';
+import {MessagePageContext} from '../context/MessagePageContext';
 
 export default function Authenticated({navigation, route}) {
   const [displayName, setDisplayName] = useState('');
@@ -37,6 +38,7 @@ export default function Authenticated({navigation, route}) {
   const uploadUrlState = useContext(UploadUrlContext);
   const uploadFilenameState = useContext(UploadFilenameContext);
   const messagesState = useContext(MessagesContext);
+  const messagePageState = useContext(MessagePageContext);
 
   function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);
@@ -185,6 +187,7 @@ export default function Authenticated({navigation, route}) {
         }, data.refresh_upload_destination_in);
       } else if ('message_notifications' in data) {
         messagesState.setMessages(data.message_notifications);
+        messagePageState.setMessagePage(data.page_number);
         setTimeout(() => {
           ws.send(
             JSON.stringify({
@@ -192,6 +195,13 @@ export default function Authenticated({navigation, route}) {
             }),
           );
         }, data.refresh_message_notifications_in);
+      } else if ('refresh_notifications' == data.type) {
+        ws.send(
+          JSON.stringify({
+            command: 'fetch_message_notifications',
+            page_number: messagePageState.messagePage,
+          }),
+        );
       }
     };
 
