@@ -30,8 +30,6 @@ export default function Authenticated({navigation, route}) {
   const [userWs, setUserWs] = useState(null);
   const [canAccessContacts, setCanAccessContacts] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [uploadUrlTimeout, setUploadUrlTimeout] = useState(null);
-  const [msgNotificationsTimeout, setMsgNotificationsTimeout] = useState(null);
   const state = useContext(RoomWsContext);
   const roomNameState = useContext(RoomNameContext);
   const contactsState = useContext(ContactsContext);
@@ -178,30 +176,22 @@ export default function Authenticated({navigation, route}) {
       } else if ('upload_url' in data) {
         uploadUrlState.setUploadUrl(data.upload_url);
         uploadFilenameState.setUploadFilename(data.upload_filename);
-        if (uploadUrlTimeout) {
-          clearTimeout(uploadUrlTimeout);
-        }
-        const newTimeout = setTimeout(() => {
+        setTimeout(() => {
           ws.send(
             JSON.stringify({
               command: 'fetch_upload_url',
             }),
           );
         }, data.refresh_upload_destination_in);
-        setUploadUrlTimeout(newTimeout);
       } else if ('message_notifications' in data) {
         messagesState.setMessages(data.message_notifications);
-        if (msgNotificationsTimeout) {
-          clearTimeout(msgNotificationsTimeout);
-        }
-        const newTimeout = setTimeout(() => {
+        setTimeout(() => {
           ws.send(
             JSON.stringify({
               command: 'fetch_message_notifications',
             }),
           );
         }, data.refresh_message_notifications_in);
-        setMsgNotificationsTimeout(newTimeout);
       }
     };
 
