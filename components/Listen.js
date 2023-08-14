@@ -30,6 +30,7 @@ export default ({navigation, route}) => {
       track.play(completed => {
         if (completed) {
           setIsPlaying(false);
+          setPlaySeconds(duration);
         } else {
           console.log('playback failed due to audio decoding errors');
         }
@@ -57,6 +58,7 @@ export default ({navigation, route}) => {
         recording.play(completed => {
           if (completed) {
             setIsPlaying(false);
+            setPlaySeconds(duration);
           } else {
             console.log('playback failed due to audio decoding errors');
           }
@@ -65,6 +67,9 @@ export default ({navigation, route}) => {
         setDuration(recording.getDuration());
       }
     });
+    if (timeout) {
+      clearInterval(timeout);
+    }
     setTimeout(
       setInterval(() => {
         recording.getCurrentTime((seconds, recordingIsPlaying) => {

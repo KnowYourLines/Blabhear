@@ -56,6 +56,7 @@ export default ({navigation}) => {
       track.play(completed => {
         if (completed) {
           setIsPlaying(false);
+          setPlaySeconds(duration);
         } else {
           console.log('playback failed due to audio decoding errors');
         }
@@ -65,6 +66,7 @@ export default ({navigation}) => {
   const onStopPlay = async () => {
     if (track) {
       setIsPlaying(false);
+      setPlaySeconds(duration);
       track.pause();
       track.release();
       if (timeout) {
@@ -184,6 +186,9 @@ export default ({navigation}) => {
           setTrack(recording);
           setDuration(recording.getDuration());
           setPlaySeconds(0);
+          if (timeout) {
+            clearInterval(timeout);
+          }
           setTimeout(
             setInterval(() => {
               recording.getCurrentTime((seconds, recordingIsPlaying) => {
