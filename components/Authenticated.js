@@ -20,6 +20,7 @@ import {RoomNameContext} from '../context/RoomNameContext';
 import {ContactsContext} from '../context/ContactsContext';
 import {ConnectedContext} from '../context/ConnectedContext';
 import {UploadUrlContext} from '../context/UploadUrlContext';
+import {UploadFilenameContext} from '../context/UploadFilenameContext';
 import {MessagesContext} from '../context/MessagesContext';
 
 export default function Authenticated({navigation, route}) {
@@ -36,6 +37,7 @@ export default function Authenticated({navigation, route}) {
   const contactsState = useContext(ContactsContext);
   const connectedState = useContext(ConnectedContext);
   const uploadUrlState = useContext(UploadUrlContext);
+  const uploadFilenameState = useContext(UploadFilenameContext);
   const messagesState = useContext(MessagesContext);
 
   function connectUserWebSocket(props) {
@@ -175,6 +177,7 @@ export default function Authenticated({navigation, route}) {
         roomNameState.setRoomName(data.room_name);
       } else if ('upload_url' in data) {
         uploadUrlState.setUploadUrl(data.upload_url);
+        uploadFilenameState.setUploadFilename(data.upload_filename);
         if (uploadUrlTimeout) {
           clearTimeout(uploadUrlTimeout);
         }

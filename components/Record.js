@@ -24,6 +24,7 @@ import AudioRecorderPlayer, {
 
 import RNFS from 'react-native-fs';
 import {UploadUrlContext} from '../context/UploadUrlContext';
+import {UploadFilenameContext} from '../context/UploadFilenameContext';
 import {RoomWsContext} from '../context/RoomWsContext';
 
 export default ({navigation}) => {
@@ -41,6 +42,7 @@ export default ({navigation}) => {
     new AudioRecorderPlayer(),
   );
   const uploadUrlState = useContext(UploadUrlContext);
+  const uploadFilenameState = useContext(UploadFilenameContext);
   const roomWsState = useContext(RoomWsContext);
   audioRecorderPlayer.setSubscriptionDuration(0.1);
   const onStartPlay = async e => {
@@ -331,6 +333,7 @@ export default ({navigation}) => {
                     roomWsState.roomWs.send(
                       JSON.stringify({
                         command: 'send_message',
+                        filename: uploadFilenameState.uploadFilename,
                       }),
                     );
                     InCallManager.stop();
