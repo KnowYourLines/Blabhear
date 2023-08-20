@@ -108,15 +108,15 @@ export default ({navigation}) => {
         navigation.goBack();
       });
     let startPosition = null;
-    audioRecorderPlayer.addRecordBackListener(e => {
+    audioRecorderPlayer.addRecordBackListener(async e => {
       if (!startPosition) {
         startPosition = e.currentPosition;
       }
-      setRecordTime(
-        audioRecorderPlayer.mmssss(
-          Math.floor(e.currentPosition - startPosition),
-        ),
-      );
+      const newRecordTime = Math.floor(e.currentPosition - startPosition);
+      setRecordTime(audioRecorderPlayer.mmssss(newRecordTime));
+      if (newRecordTime >= 120000) {
+        await onStopRecord();
+      }
     });
     console.log(`uri: ${uri}`);
     setUri(uri);
