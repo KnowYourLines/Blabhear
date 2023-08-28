@@ -1,5 +1,12 @@
 import React, {useContext, useState} from 'react';
-import {View, StyleSheet, Text, FlatList, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import moment from 'moment';
 import {RoomWsContext} from '../context/RoomWsContext';
 import {MessagePageContext} from '../context/MessagePageContext';
@@ -46,6 +53,10 @@ export default ({navigation, messages}) => {
         renderItem={renderItem}
         extraData={refresh}
         keyExtractor={item => item.id}
+        showsVerticalScrollIndicator={false}
+        snapToInterval={Dimensions.get('window').height - 80}
+        decelerationRate={'fast'}
+        snapToAlignment={'start'}
       />
     </View>
   );
@@ -56,6 +67,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
+    flex: 1,
+    height: Dimensions.get('window').height - 80,
     flexDirection: 'row',
     padding: 12,
     borderBottomWidth: 1,
@@ -72,6 +85,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   unreadItem: {
+    flex: 1,
+    height: Dimensions.get('window').height - 80,
     flexDirection: 'row',
     padding: 12,
     borderBottomWidth: 1,
