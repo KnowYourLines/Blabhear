@@ -27,10 +27,20 @@ export default ({navigation, route}) => {
   const onStartPlay = async e => {
     setIsPlaying(true);
     if (track) {
+      setTimeout(
+        setInterval(() => {
+          track.getCurrentTime((seconds, recordingIsPlaying) => {
+            if (recordingIsPlaying && !sliderEditing) {
+              setPlaySeconds(seconds);
+            }
+          });
+        }, 100),
+      );
       track.play(completed => {
         if (completed) {
           setIsPlaying(false);
           setPlaySeconds(duration);
+          clearInterval(timeout);
         } else {
           console.log('playback failed due to audio decoding errors');
         }
@@ -54,11 +64,21 @@ export default ({navigation, route}) => {
       if (e) {
         console.log('error loading track:', e);
       } else {
+        setTimeout(
+          setInterval(() => {
+            recording.getCurrentTime((seconds, recordingIsPlaying) => {
+              if (recordingIsPlaying && !sliderEditing) {
+                setPlaySeconds(seconds);
+              }
+            });
+          }, 100),
+        );
         recording.setVolume(1);
         recording.play(completed => {
           if (completed) {
             setIsPlaying(false);
             setPlaySeconds(duration);
+            clearInterval(timeout);
           } else {
             console.log('playback failed due to audio decoding errors');
           }
@@ -67,18 +87,6 @@ export default ({navigation, route}) => {
         setDuration(recording.getDuration());
       }
     });
-    if (timeout) {
-      clearInterval(timeout);
-    }
-    setTimeout(
-      setInterval(() => {
-        recording.getCurrentTime((seconds, recordingIsPlaying) => {
-          if (recordingIsPlaying && !sliderEditing) {
-            setPlaySeconds(seconds);
-          }
-        });
-      }, 100),
-    );
   }, []);
   const onSliderEditStart = () => {
     setSliderEditing(true);
