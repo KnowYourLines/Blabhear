@@ -9,11 +9,9 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import {RoomWsContext} from '../context/RoomWsContext';
-import {MessagePageContext} from '../context/MessagePageContext';
 
 export default ({navigation, messages}) => {
   const state = useContext(RoomWsContext);
-  const messagePageState = useContext(MessagePageContext);
   const [refresh, setRefresh] = useState(true);
   setInterval(() => setRefresh(!refresh), 45000);
 
@@ -24,7 +22,6 @@ export default ({navigation, messages}) => {
         JSON.stringify({
           command: 'read_message_notification',
           message_notification_id: messages[index]['id'],
-          page_number: messagePageState.messagePage,
         }),
       );
       navigation.navigate('Listen', {

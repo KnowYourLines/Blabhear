@@ -27,7 +27,6 @@ import {ConnectedContextProvider} from './context/ConnectedContext';
 import {UploadUrlContextProvider} from './context/UploadUrlContext';
 import {UploadFilenameContextProvider} from './context/UploadFilenameContext';
 import {MessagesContextProvider} from './context/MessagesContext';
-import {MessagePageContextProvider} from './context/MessagePageContext';
 
 const Stack = createNativeStackNavigator();
 
@@ -111,86 +110,84 @@ function App() {
                 <UploadFilenameContextProvider>
                   <UploadUrlContextProvider>
                     <MessagesContextProvider>
-                      <MessagePageContextProvider>
-                        <Stack.Navigator>
-                          <Stack.Screen
-                            initialParams={{
-                              userId: userId,
-                              authToken: authToken,
-                              alpha2CountryCode: alpha2CountryCode,
-                            }}
-                            name="Home"
-                            component={Authenticated}
-                            options={{
-                              headerTitle: '',
-                              headerShown: true,
-                              headerStyle: homeHeaderStyle,
-                            }}
-                          />
-                          <Stack.Screen
-                            name="Contacts"
-                            component={RegisteredContacts}
-                            options={{
-                              headerTitle: 'Select Contacts',
-                              headerShown: true,
-                              headerStyle: {
-                                backgroundColor: 'transparent',
-                              },
-                              headerTintColor: 'white',
-                              headerTitleStyle: {
-                                fontWeight: 'bold',
-                              },
-                            }}
-                          />
-                          <Stack.Screen
-                            name="Room"
-                            component={Room}
-                            options={{
-                              headerTitle: 'Room',
-                              headerShown: true,
-                              headerStyle: {
-                                backgroundColor: 'transparent',
-                              },
-                              headerTintColor: 'white',
-                              headerTitleStyle: {
-                                fontWeight: 'bold',
-                              },
-                            }}
-                          />
-                          <Stack.Screen
-                            name="Members"
-                            component={RoomMembers}
-                            options={{
-                              headerTitle: 'Members',
-                              headerShown: true,
-                              headerStyle: {
-                                backgroundColor: 'transparent',
-                              },
-                              headerTintColor: 'white',
-                              headerTitleStyle: {
-                                fontWeight: 'bold',
-                              },
-                            }}
-                          />
-                          <Stack.Screen
-                            name="RoomName"
-                            component={RoomName}
-                            options={{
-                              headerShown: false,
-                            }}
-                          />
-                          <Stack.Screen
-                            name="Listen"
-                            component={Listen}
-                            options={listenHeaderOptions}
-                          />
-                          <Stack.Screen
-                            name="Record"
-                            component={Record}
-                            options={listenHeaderOptions}
-                          />
-                        </Stack.Navigator>
-                      </MessagePageContextProvider>
+                      <Stack.Navigator>
+                        <Stack.Screen
+                          initialParams={{
+                            userId: userId,
+                            authToken: authToken,
+                            alpha2CountryCode: alpha2CountryCode,
+                          }}
+                          name="Home"
+                          component={Authenticated}
+                          options={{
+                            headerTitle: '',
+                            headerShown: true,
+                            headerStyle: homeHeaderStyle,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="Contacts"
+                          component={RegisteredContacts}
+                          options={{
+                            headerTitle: 'Select Contacts',
+                            headerShown: true,
+                            headerStyle: {
+                              backgroundColor: 'transparent',
+                            },
+                            headerTintColor: 'white',
+                            headerTitleStyle: {
+                              fontWeight: 'bold',
+                            },
+                          }}
+                        />
+                        <Stack.Screen
+                          name="Room"
+                          component={Room}
+                          options={{
+                            headerTitle: 'Room',
+                            headerShown: true,
+                            headerStyle: {
+                              backgroundColor: 'transparent',
+                            },
+                            headerTintColor: 'white',
+                            headerTitleStyle: {
+                              fontWeight: 'bold',
+                            },
+                          }}
+                        />
+                        <Stack.Screen
+                          name="Members"
+                          component={RoomMembers}
+                          options={{
+                            headerTitle: 'Members',
+                            headerShown: true,
+                            headerStyle: {
+                              backgroundColor: 'transparent',
+                            },
+                            headerTintColor: 'white',
+                            headerTitleStyle: {
+                              fontWeight: 'bold',
+                            },
+                          }}
+                        />
+                        <Stack.Screen
+                          name="RoomName"
+                          component={RoomName}
+                          options={{
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="Listen"
+                          component={Listen}
+                          options={listenHeaderOptions}
+                        />
+                        <Stack.Screen
+                          name="Record"
+                          component={Record}
+                          options={listenHeaderOptions}
+                        />
+                      </Stack.Navigator>
                     </MessagesContextProvider>
                   </UploadUrlContextProvider>
                 </UploadFilenameContextProvider>
