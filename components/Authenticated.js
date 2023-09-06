@@ -163,7 +163,9 @@ export default function Authenticated({navigation, route}) {
     ws.onopen = () => {
       console.log('opened room websocket');
     };
-
+    let msgTimeout = null;
+    let uploadTimeout = null;
+    let messages = [];
     ws.onmessage = message => {
       const data = JSON.parse(message.data);
       if ('new_room' == data.type) {
@@ -176,22 +178,34 @@ export default function Authenticated({navigation, route}) {
       } else if ('upload_url' in data) {
         uploadUrlState.setUploadUrl(data.upload_url);
         uploadFilenameState.setUploadFilename(data.upload_filename);
-        setTimeout(() => {
+        if (uploadTimeout) {
+          clearTimeout(uploadTimeout);
+        }
+        const newUploadTimeout = setTimeout(() => {
           ws.send(
             JSON.stringify({
               command: 'fetch_upload_url',
             }),
           );
         }, data.refresh_upload_destination_in);
+        uploadTimeout = newUploadTimeout;
       } else if ('message_notifications' in data) {
-        messagesState.setMessages(data.message_notifications);
-        setTimeout(() => {
+        messages = data.message_notifications;
+        messagesState.setMessages(messages);
+        if (msgTimeout) {
+          clearTimeout(msgTimeout);
+        }
+        const newMsgTimeout = setTimeout(() => {
           ws.send(
             JSON.stringify({
               command: 'fetch_message_notifications',
             }),
           );
         }, data.refresh_message_notifications_in);
+        msgTimeout = newMsgTimeout;
+      } else if ('new_message' == data.type) {
+        messages.push(data.message);
+        messagesState.setMessages(messages);
       }
     };
 
