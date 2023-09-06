@@ -8,22 +8,14 @@ import {
   Dimensions,
 } from 'react-native';
 import moment from 'moment';
-import {RoomWsContext} from '../context/RoomWsContext';
 
 export default ({navigation, messages}) => {
-  const state = useContext(RoomWsContext);
   const [refresh, setRefresh] = useState(true);
   setInterval(() => setRefresh(!refresh), 45000);
 
   renderItem = ({item, index}) => {
     const timestamp = moment.unix(item.timestamp).fromNow();
     const onPress = () => {
-      state.roomWs.send(
-        JSON.stringify({
-          command: 'read_message_notification',
-          message_notification_id: messages[index]['id'],
-        }),
-      );
       navigation.navigate('Listen', {
         soundUrl: messages[index].url,
         messageNotificationId: messages[index].id,
@@ -31,7 +23,7 @@ export default ({navigation, messages}) => {
       });
     };
     return (
-      <View style={item.read ? styles.item : styles.unreadItem}>
+      <View style={styles.item}>
         <TouchableOpacity style={styles.title} onPress={onPress}>
           <Text style={styles.title} numberOfLines={1}>
             {item.message__creator__display_name}
@@ -80,14 +72,5 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'grey',
     width: '100%',
-  },
-  unreadItem: {
-    flex: 1,
-    height: Dimensions.get('window').height - 80,
-    flexDirection: 'row',
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: 'white',
-    backgroundColor: 'blue',
   },
 });
