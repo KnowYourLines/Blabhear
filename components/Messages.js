@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -43,7 +43,7 @@ export default ({navigation, messages}) => {
         extraData={refresh}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
-        snapToInterval={Dimensions.get('window').height - 80}
+        snapToInterval={Dimensions.get('window').height - 120}
         decelerationRate={'fast'}
         snapToAlignment={'start'}
       />
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   item: {
     flex: 1,
-    height: Dimensions.get('window').height - 80,
+    height: Dimensions.get('window').height - 120,
     flexDirection: 'row',
     padding: 12,
     borderBottomWidth: 1,
@@ -67,10 +67,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlignVertical: 'center',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 15,
     color: 'grey',
     width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlignVertical: 'center',
+    textAlign: 'center',
   },
 });

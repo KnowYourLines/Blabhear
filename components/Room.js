@@ -5,11 +5,9 @@ import {
   TouchableOpacity,
   Text,
   Image,
-  DeviceEventEmitter,
   NativeModules,
   Platform,
 } from 'react-native';
-import InCallManager from 'react-native-incall-manager';
 import Button from './Button';
 import Messages from './Messages';
 import {HeaderBackButton} from '@react-navigation/elements';
@@ -20,7 +18,6 @@ import {RoomWsContext} from '../context/RoomWsContext';
 
 export default ({navigation, route}) => {
   const state = useContext(RoomNameContext);
-  const [isNear, setIsNear] = useState(false);
   const [members, setMembers] = useState(route.params.members);
   const connectedState = useContext(ConnectedContext);
   const messagesState = useContext(MessagesContext);
@@ -28,13 +25,8 @@ export default ({navigation, route}) => {
   if (Platform.OS == 'ios') {
     NativeModules.InCallManager.addListener('Proximity');
   }
-  DeviceEventEmitter.addListener('Proximity', function (data) {
-    setIsNear(data['isNear']);
-  });
   React.useEffect(() => {
-    InCallManager.start();
     navigation.setOptions({
-      headerShown: !isNear,
       headerTitle: () => {
         if (members.length == 2) {
           return (
@@ -64,7 +56,6 @@ export default ({navigation, route}) => {
         <HeaderBackButton
           {...props}
           onPress={() => {
-            InCallManager.stop();
             navigation.navigate('Home');
             roomWsState.roomWs.send(
               JSON.stringify({
@@ -88,7 +79,7 @@ export default ({navigation, route}) => {
         );
       },
     });
-  }, [navigation, state.roomName, isNear]);
+  }, [navigation, state.roomName]);
   if (!connectedState.connected) {
     return (
       <View style={styles.screen}>
@@ -96,23 +87,19 @@ export default ({navigation, route}) => {
       </View>
     );
   }
-  if (!isNear) {
-    return (
-      <View style={styles.listContainer}>
-        <Messages messages={messagesState.messages} navigation={navigation} />
-        <View style={{marginBottom: '5%'}}>
-          <Button
-            title="Record"
-            onPress={() => {
-              navigation.navigate('Record');
-            }}
-          />
-        </View>
+  return (
+    <View style={styles.listContainer}>
+      <Messages messages={messagesState.messages} navigation={navigation} />
+      <View style={{marginBottom: '5%'}}>
+        <Button
+          title="Record"
+          onPress={() => {
+            navigation.navigate('Record');
+          }}
+        />
       </View>
-    );
-  } else {
-    return <View></View>;
-  }
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
