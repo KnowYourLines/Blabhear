@@ -13,17 +13,17 @@ export default ({navigation, messages}) => {
   const [refresh, setRefresh] = useState(true);
   setInterval(() => setRefresh(!refresh), 45000);
 
-  renderItem = ({item, index}) => {
+  renderItem = ({item}) => {
     const timestamp = moment.unix(item.timestamp).fromNow();
     const onPress = () => {
       navigation.navigate('Listen', {
-        soundUrl: messages[index].url,
-        messageNotificationId: messages[index].id,
-        isOwnMessage: messages[index].is_own_message,
+        soundUrl: item.url,
+        messageNotificationId: item.id,
+        isOwnMessage: item.is_own_message,
       });
     };
     return (
-      <View style={styles.item}>
+      <View style={item.is_own_message ? styles.myItem : styles.item}>
         <TouchableOpacity style={styles.title} onPress={onPress}>
           <Text style={styles.title} numberOfLines={1}>
             {item.message__creator__display_name}
@@ -62,6 +62,15 @@ const styles = StyleSheet.create({
     padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: 'white',
+  },
+  myItem: {
+    flex: 1,
+    height: Dimensions.get('window').height - 120,
+    flexDirection: 'row',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'white',
+    backgroundColor: 'midnightblue',
   },
   title: {
     fontSize: 20,
