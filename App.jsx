@@ -31,7 +31,6 @@ import {MessagesContextProvider} from './context/MessagesContext';
 const Stack = createNativeStackNavigator();
 
 function App() {
-  const [alpha2CountryCode, setAlpha2CountryCode] = useState('');
   const [userId, setUserId] = useState('');
   const [authToken, setAuthToken] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
@@ -46,9 +45,6 @@ function App() {
 
   const netInfo = useNetInfo();
 
-  DeviceEventEmitter.addListener('alpha2CountryCode', eventData =>
-    setAlpha2CountryCode(eventData.alpha2CountryCode),
-  );
   auth().onAuthStateChanged(user => {
     if (user) {
       user
@@ -115,7 +111,6 @@ function App() {
                           initialParams={{
                             userId: userId,
                             authToken: authToken,
-                            alpha2CountryCode: alpha2CountryCode,
                           }}
                           name="Home"
                           component={Authenticated}

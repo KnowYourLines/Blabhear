@@ -50,9 +50,7 @@ export default function Authenticated({navigation, route}) {
       '/ws/user/' +
       props.userId +
       '/?token=' +
-      props.authToken +
-      '&country=' +
-      props.alpha2CountryCode;
+      props.authToken;
     const ws = new WebSocket(path);
     ws.onopen = () => {
       connectedState.setConnected(true);

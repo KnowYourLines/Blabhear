@@ -17,15 +17,11 @@ export default function PhoneNumber() {
   const [confirm, setConfirm] = useState(null);
   const [show, setShow] = useState(true);
   const [countryDialCode, setCountryDialCode] = useState('');
-  const [alpha2CountryCode, setAlpha2CountryCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
   React.useEffect(() => {
     // the package is buggy and requires show state to be true before being set to false to work
     setShow(false);
-    return () => {
-      DeviceEventEmitter.removeAllListeners('alpha2CountryCode');
-    };
   }, []);
 
   const inputsValid = () => {
@@ -81,7 +77,6 @@ export default function PhoneNumber() {
         show={show}
         pickerButtonOnPress={item => {
           setCountryDialCode(item.dial_code);
-          setAlpha2CountryCode(item.code);
           setShow(false);
         }}
         inputPlaceholder={'Search by country or dial code'}
@@ -113,9 +108,6 @@ export default function PhoneNumber() {
         title="Sign In"
         onPress={async () => {
           if (inputsValid()) {
-            DeviceEventEmitter.emit('alpha2CountryCode', {
-              alpha2CountryCode: alpha2CountryCode,
-            });
             try {
               const confirmation = await auth().signInWithPhoneNumber(
                 countryDialCode + phoneNumber,
