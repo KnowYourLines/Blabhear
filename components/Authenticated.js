@@ -298,11 +298,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'white',
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
   rowButtons: {
     marginTop: 30,
     flexDirection: 'row',
