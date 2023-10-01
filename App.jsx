@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  DeviceEventEmitter,
-  Platform,
-  Alert,
-} from 'react-native';
+import {View, Text, StyleSheet, Platform, Alert} from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 import PhoneNumber from './components/PhoneNumber';
@@ -48,7 +41,7 @@ function App() {
   auth().onAuthStateChanged(user => {
     if (user) {
       user
-        .getIdToken()
+        .getIdToken(true)
         .then(token => {
           setAuthToken(token);
           setUserId(user.uid);
