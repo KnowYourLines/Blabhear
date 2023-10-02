@@ -6,7 +6,6 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
-  DeviceEventEmitter,
 } from 'react-native';
 import Button from './Button';
 import VerifyCode from './VerifyCode';
@@ -16,6 +15,7 @@ import auth from '@react-native-firebase/auth';
 export default function PhoneNumber() {
   const [confirm, setConfirm] = useState(null);
   const [show, setShow] = useState(true);
+  const [signInDisabled, setSignInDisabled] = useState(false);
   const [countryDialCode, setCountryDialCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
@@ -106,14 +106,17 @@ export default function PhoneNumber() {
 
       <Button
         title="Sign In"
+        disabled={signInDisabled}
         onPress={async () => {
           if (inputsValid()) {
+            setSignInDisabled(true);
             try {
               const confirmation = await auth().signInWithPhoneNumber(
                 countryDialCode + phoneNumber,
               );
               setConfirm(confirmation);
             } catch (error) {
+              setSignInDisabled(false);
               console.log(error.message);
               Alert.alert('Uh-oh!', error.message, [
                 {
