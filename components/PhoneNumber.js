@@ -6,11 +6,13 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Linking,
 } from 'react-native';
 import Button from './Button';
 import VerifyCode from './VerifyCode';
 import {CountryPicker} from 'react-native-country-codes-picker';
 import auth from '@react-native-firebase/auth';
+import CheckBox from '@react-native-community/checkbox';
 
 export default function PhoneNumber() {
   const [confirm, setConfirm] = useState(null);
@@ -18,6 +20,7 @@ export default function PhoneNumber() {
   const [signInDisabled, setSignInDisabled] = useState(false);
   const [countryDialCode, setCountryDialCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [toggleCheckBox, setToggleCheckBox] = useState(false);
 
   React.useEffect(() => {
     // the package is buggy and requires show state to be true before being set to false to work
@@ -36,6 +39,15 @@ export default function PhoneNumber() {
     }
     if (!phoneNumber.trim()) {
       Alert.alert('Please enter phone number', '', [
+        {
+          text: 'OK',
+          style: 'OK',
+        },
+      ]);
+      return false;
+    }
+    if (!toggleCheckBox) {
+      Alert.alert('You must agree to the end user license agreement', '', [
         {
           text: 'OK',
           style: 'OK',
@@ -103,7 +115,21 @@ export default function PhoneNumber() {
           onChangeText={setPhoneNumber}
         />
       </View>
-
+      <View style={styles.row}>
+        <CheckBox
+          disabled={false}
+          value={toggleCheckBox}
+          onValueChange={newValue => setToggleCheckBox(newValue)}
+        />
+        <Text style={{padding: 10, color: 'white'}}>
+          I agree to the{' '}
+          <Text
+            style={{color: 'skyblue'}}
+            onPress={() => Linking.openURL('https://blabhear.com/eula.html')}>
+            End User License Agreement
+          </Text>
+        </Text>
+      </View>
       <Button
         title="Sign In"
         disabled={signInDisabled}
