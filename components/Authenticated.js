@@ -204,6 +204,11 @@ export default function Authenticated({navigation, route}) {
       } else if ('new_message' == data.type) {
         messages.push(data.message);
         messagesState.setMessages(messages);
+      } else if ('deleted_message_notification' == data.type) {
+        messages = messages.filter(
+          message => message.id != data.message_notification_id,
+        );
+        messagesState.setMessages(messages);
       }
     };
 

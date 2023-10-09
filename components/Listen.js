@@ -181,11 +181,18 @@ export default ({navigation, route}) => {
                         route.params.messageNotificationId,
                     }),
                   );
-                  messagesState.setMessages(
-                    messagesState.messages.filter(
-                      message =>
-                        message.id != route.params.messageNotificationId,
-                    ),
+                  InCallManager.stop();
+                  navigation.goBack();
+                }}
+                title="Report"></Button>
+              <Button
+                onPress={() => {
+                  roomWsState.roomWs.send(
+                    JSON.stringify({
+                      command: 'delete_message_notification',
+                      message_notification_id:
+                        route.params.messageNotificationId,
+                    }),
                   );
                   InCallManager.stop();
                   navigation.goBack();
@@ -197,7 +204,27 @@ export default ({navigation, route}) => {
                     clearInterval(timeout);
                   }
                 }}
-                title="Report Abuse"></Button>
+                title="Remove"></Button>
+              <Button
+                onPress={() => {
+                  roomWsState.roomWs.send(
+                    JSON.stringify({
+                      command: 'block_message_notification_user',
+                      message_notification_id:
+                        route.params.messageNotificationId,
+                    }),
+                  );
+                  InCallManager.stop();
+                  navigation.goBack();
+                  if (track) {
+                    track.pause();
+                    track.release();
+                  }
+                  if (timeout) {
+                    clearInterval(timeout);
+                  }
+                }}
+                title="Block"></Button>
             </View>
           )}
         </View>
@@ -220,6 +247,8 @@ const styles = StyleSheet.create({
   },
   reportBtnWrapper: {
     flexDirection: 'row',
-    marginTop: 80,
+    marginTop: 150,
+    alignItems: 'center',
+    gap: 20,
   },
 });
