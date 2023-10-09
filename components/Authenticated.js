@@ -8,7 +8,6 @@ import {
   Alert,
   Text,
 } from 'react-native';
-import auth from '@react-native-firebase/auth';
 import DisplayName from './DisplayName';
 import NewContact from './NewContact';
 import Notifications from './Notifications';
@@ -275,7 +274,10 @@ export default function Authenticated({navigation, route}) {
 
       <View style={styles.rowButtons}>
         <View>
-          <Button title="Sign Out" onPress={() => auth().signOut()} />
+          <Button
+            title="Settings"
+            onPress={() => navigation.navigate('Settings', {token: route.params.authToken})}
+          />
         </View>
         <View>
           <Button

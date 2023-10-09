@@ -10,6 +10,7 @@ import RoomMembers from './components/RoomMembers';
 import RoomName from './components/RoomName';
 import Listen from './components/Listen';
 import Record from './components/Record';
+import Settings from './components/Settings';
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useNetInfo} from '@react-native-community/netinfo';
@@ -174,6 +175,21 @@ function App() {
                           name="Record"
                           component={Record}
                           options={listenHeaderOptions}
+                        />
+                        <Stack.Screen
+                          name="Settings"
+                          component={Settings}
+                          options={{
+                            headerTitle: 'Settings',
+                            headerShown: true,
+                            headerStyle: {
+                              backgroundColor: 'transparent',
+                            },
+                            headerTintColor: 'white',
+                            headerTitleStyle: {
+                              fontWeight: 'bold',
+                            },
+                          }}
                         />
                       </Stack.Navigator>
                     </MessagesContextProvider>

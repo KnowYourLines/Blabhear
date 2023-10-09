@@ -131,7 +131,7 @@ export default function PhoneNumber() {
         </Text>
       </View>
       <Button
-        title="Sign In"
+        title="Next"
         disabled={signInDisabled}
         onPress={async () => {
           if (inputsValid()) {
