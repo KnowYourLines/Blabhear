@@ -43,7 +43,7 @@
 		<dict/>
 	</dict>
 	<key>NSContactsUsageDescription</key>
-	<string>Connect to contacts who also have the app</string>
+	<string>Send $(PRODUCT_NAME) phone numbers to check which contacts have accounts. Phone numbers wont be saved.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
