@@ -36,6 +36,7 @@ export default ({navigation}) => {
   const [playSeconds, setPlaySeconds] = useState(0);
   const [duration, setDuration] = useState(0);
   const [sliderEditing, setSliderEditing] = useState(false);
+  const [canSend, setCanSend] = useState(true);
   const [timeout, setTimeout] = useState(null);
   const [uri, setUri] = useState('');
   const [audioRecorderPlayer, setAudioRecorderPlayer] = useState(
@@ -324,10 +325,12 @@ export default ({navigation}) => {
             </View>
             <View style={styles.sendBtnWrapper}>
               <Button
+                disabled={!canSend}
                 onPress={() => {
                   if (isPlaying) {
                     onStopPlay();
                   }
+                  setCanSend(false);
                   const request = new XMLHttpRequest();
                   request.open('PUT', uploadUrlState.uploadUrl);
                   request.onload = () => {
