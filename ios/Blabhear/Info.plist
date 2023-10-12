@@ -47,7 +47,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Give $(PRODUCT_NAME) permission to use your microphone. Your recording wont be shared without your permission.</string>
+	<string>Send $(PRODUCT_NAME) voice recordings to be shared with other users in chats.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
