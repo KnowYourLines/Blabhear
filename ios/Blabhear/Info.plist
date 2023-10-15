@@ -50,8 +50,9 @@
 	<string>Send $(PRODUCT_NAME) voice recordings to be shared with other users in chats.</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>remote-notification</string>
 		<string>audio</string>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
