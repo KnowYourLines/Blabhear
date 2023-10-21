@@ -13,6 +13,7 @@ import NewContact from './NewContact';
 import Notifications from './Notifications';
 import Button from './Button';
 import Contacts from 'react-native-contacts';
+import messaging from '@react-native-firebase/messaging';
 import Config from 'react-native-config';
 import {RoomWsContext} from '../context/RoomWsContext';
 import {RoomNameContext} from '../context/RoomNameContext';
@@ -36,6 +37,14 @@ export default function Authenticated({navigation, route}) {
   const uploadUrlState = useContext(UploadUrlContext);
   const uploadFilenameState = useContext(UploadFilenameContext);
   const messagesState = useContext(MessagesContext);
+
+  async function requestUserPermission() {
+    const authorizationStatus = await messaging().requestPermission();
+
+    if (authorizationStatus) {
+      console.log('Permission status:', authorizationStatus);
+    }
+  }
 
   function connectUserWebSocket(props) {
     const backendUrl = new URL(Config.BACKEND_URL);
@@ -237,6 +246,21 @@ export default function Authenticated({navigation, route}) {
   React.useEffect(() => {
     connectUserWebSocket(route.params);
     connectRoomWebSocket(route.params);
+    const setUpCloudMessaging = async () => {
+      requestUserPermission();
+      if (Platform.OS === 'android') {
+        PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+        );
+      }
+      const token = await messaging().getToken();
+      console.log('token is: ' + token);
+    };
+    setUpCloudMessaging();
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+    return unsubscribe;
   }, []);
 
   if (!connectedState.connected) {
@@ -276,7 +300,9 @@ export default function Authenticated({navigation, route}) {
         <View>
           <Button
             title="Settings"
-            onPress={() => navigation.navigate('Settings', {token: route.params.authToken})}
+            onPress={() =>
+              navigation.navigate('Settings', {token: route.params.authToken})
+            }
           />
         </View>
         <View>

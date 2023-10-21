@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View, Text, StyleSheet, Platform, Alert} from 'react-native';
 
 import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
 import PhoneNumber from './components/PhoneNumber';
 import Authenticated from './components/Authenticated';
 import RegisteredContacts from './components/RegisteredContacts';
@@ -23,6 +24,10 @@ import {UploadFilenameContextProvider} from './context/UploadFilenameContext';
 import {MessagesContextProvider} from './context/MessagesContext';
 
 const Stack = createNativeStackNavigator();
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+});
 
 function App() {
   const [userId, setUserId] = useState('');
