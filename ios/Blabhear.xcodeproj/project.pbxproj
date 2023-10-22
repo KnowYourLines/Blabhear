@@ -509,11 +509,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Blabhear/Blabhear.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = DW24UHST3W;
+				DEVELOPMENT_TEAM = DW24UHST3W;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Blabhear/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -529,7 +527,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.iOS.Blabhear;
 				PRODUCT_NAME = Blabhear;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Blabhear Dev";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -544,11 +541,9 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Blabhear/Blabhear.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = DW24UHST3W;
+				DEVELOPMENT_TEAM = DW24UHST3W;
 				INFOPLIST_FILE = Blabhear/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -563,7 +558,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.iOS.Blabhear;
 				PRODUCT_NAME = Blabhear;
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "Blabhear Dev";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
