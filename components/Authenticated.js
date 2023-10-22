@@ -14,7 +14,7 @@ import Notifications from './Notifications';
 import Button from './Button';
 import Contacts from 'react-native-contacts';
 import messaging from '@react-native-firebase/messaging';
-import notifee, {EventType} from '@notifee/react-native';
+import notifee, {AndroidImportance} from '@notifee/react-native';
 import Config from 'react-native-config';
 import {RoomWsContext} from '../context/RoomWsContext';
 import {RoomNameContext} from '../context/RoomNameContext';
@@ -267,8 +267,9 @@ export default function Authenticated({navigation, route}) {
 
     // Create a channel (required for Android)
     const channelId = await notifee.createChannel({
-      id: 'default',
-      name: 'Default Channel',
+      id: 'important',
+      name: 'Important Notifications',
+      importance: AndroidImportance.HIGH,
     });
 
     // Display a notification
@@ -280,7 +281,8 @@ export default function Authenticated({navigation, route}) {
         smallIcon: 'ic_notification',
         // pressAction is needed if you want the notification to open the app when pressed
         pressAction: {
-          id: 'default',
+          id: 'important',
+          importance: AndroidImportance.HIGH,
         },
       },
     });
