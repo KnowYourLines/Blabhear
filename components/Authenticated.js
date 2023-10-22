@@ -14,6 +14,7 @@ import Notifications from './Notifications';
 import Button from './Button';
 import Contacts from 'react-native-contacts';
 import messaging from '@react-native-firebase/messaging';
+import notifee, {EventType} from '@notifee/react-native';
 import Config from 'react-native-config';
 import {RoomWsContext} from '../context/RoomWsContext';
 import {RoomNameContext} from '../context/RoomNameContext';
@@ -243,6 +244,37 @@ export default function Authenticated({navigation, route}) {
       );
     });
   }
+
+  async function onDisplayNotification(remoteMessage) {
+    // Request permissions (required for iOS)
+    await notifee.requestPermission();
+
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+
+    // Display a notification
+    await notifee.displayNotification({
+      title: remoteMessage.notification.title,
+      body: remoteMessage.notification.body,
+      android: {
+        channelId,
+        smallIcon: 'ic_notification',
+        // pressAction is needed if you want the notification to open the app when pressed
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
+    notifee.onForegroundEvent(({type, detail}) => {
+      switch (type) {
+        case EventType.PRESS:
+          navigation.navigate('Home');
+      }
+    });
+  }
   React.useEffect(() => {
     connectUserWebSocket(route.params);
     connectRoomWebSocket(route.params);
@@ -258,7 +290,7 @@ export default function Authenticated({navigation, route}) {
     };
     setUpCloudMessaging();
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+      onDisplayNotification(remoteMessage);
     });
     return unsubscribe;
   }, []);

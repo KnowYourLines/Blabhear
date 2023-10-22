@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@notifee/react-native": "^7.8.0",
     "@react-native-community/checkbox": "^0.5.16",
     "@react-native-community/netinfo": "^9.3.9",
     "@react-native-community/slider": "^4.4.2",

@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, Platform, Alert} from 'react-native';
 
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
+import notifee from '@notifee/react-native';
 import PhoneNumber from './components/PhoneNumber';
 import Authenticated from './components/Authenticated';
 import RegisteredContacts from './components/RegisteredContacts';
@@ -25,9 +26,9 @@ import {MessagesContextProvider} from './context/MessagesContext';
 
 const Stack = createNativeStackNavigator();
 
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('Message handled in the background!', remoteMessage);
-});
+messaging().setBackgroundMessageHandler(async remoteMessage => {});
+
+notifee.onBackgroundEvent(({type, detail}) => {});
 
 function App() {
   const [userId, setUserId] = useState('');
