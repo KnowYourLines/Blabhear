@@ -126,6 +126,22 @@ export default function Authenticated({navigation, route}) {
       } else {
         loadContacts(ws);
       }
+      const setUpCloudMessaging = async () => {
+        requestUserPermission();
+        if (Platform.OS === 'android') {
+          PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+          );
+        }
+        const token = await messaging().getToken();
+        ws.send(
+          JSON.stringify({
+            command: 'save_fcm_token',
+            registration_token: token,
+          }),
+        );
+      };
+      setUpCloudMessaging();
     };
 
     ws.onmessage = message => {
@@ -268,27 +284,11 @@ export default function Authenticated({navigation, route}) {
         },
       },
     });
-    notifee.onForegroundEvent(({type, detail}) => {
-      switch (type) {
-        case EventType.PRESS:
-          navigation.navigate('Home');
-      }
-    });
+    notifee.onForegroundEvent(({type, detail}) => {});
   }
   React.useEffect(() => {
     connectUserWebSocket(route.params);
     connectRoomWebSocket(route.params);
-    const setUpCloudMessaging = async () => {
-      requestUserPermission();
-      if (Platform.OS === 'android') {
-        PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-        );
-      }
-      const token = await messaging().getToken();
-      console.log('token is: ' + token);
-    };
-    setUpCloudMessaging();
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       onDisplayNotification(remoteMessage);
     });
